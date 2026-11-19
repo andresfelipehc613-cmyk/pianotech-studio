@@ -45,6 +45,9 @@
         .piano-scroll {
             width: 100%;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-x pan-y;
+            overscroll-behavior-x: contain;
             padding-bottom: 6px;
         }
         .piano-bed {
@@ -57,6 +60,35 @@
             border: 1px solid #272732;
             box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.08);
             box-sizing: border-box;
+            transition: height 0.15s ease;
+        }
+        /* Modo vista completa de 5 octavas en pantallas pequeñas (móvil/tablet) */
+        .piano-bed.fit-all {
+            min-width: 100% !important;
+            height: 158px;
+            padding: 6px 6px 10px 6px;
+        }
+        .piano-bed.fit-all .white-key {
+            padding-bottom: 3px;
+            border-radius: 0 0 3px 3px;
+        }
+        .piano-bed.fit-all .black-key {
+            padding-bottom: 2px;
+            border-radius: 0 0 3px 3px;
+        }
+        .piano-bed.fit-all .white-key [data-role="note-label"] {
+            font-size: 6.5px;
+            letter-spacing: -0.05em;
+        }
+        .piano-bed.fit-all .black-key [data-role="note-label"] {
+            display: none;
+        }
+        .piano-bed.fit-all .finger-pill {
+            width: 12px;
+            height: 12px;
+            min-height: 12px;
+            font-size: 0.48rem;
+            margin-bottom: 2px;
         }
         /* Contenedor interno sin padding para alineación geométrica exacta de teclas negras */
         .piano-inner {
@@ -510,8 +542,33 @@
 
             <!-- Piano de 5 Octavas (C2 = 0 ... C7 = 60, 61 Teclas) -->
             <div id="piano-scroll-wrapper" class="piano-scroll">
-                <div class="piano-bed">
+                <div id="piano-bed" class="piano-bed">
                     <div id="piano-keyboard" class="piano-inner"></div>
+                </div>
+            </div>
+
+            <!-- Navegador táctil de octavas (solo visible en pantallas pequeñas donde el piano se desplaza) -->
+            <div id="mobile-piano-nav" class="hidden flex-col gap-2 pt-2 border-t border-zinc-800/80">
+                <div id="mobile-scrubber-row" class="flex items-center gap-2">
+                    <button id="btn-scroll-left" type="button" class="px-2.5 py-1.5 rounded-lg bg-studio-800 hover:bg-studio-700 active:scale-95 border border-zinc-700 text-xs font-bold text-zinc-200 cursor-pointer shrink-0" aria-label="Desplazar a octava anterior">◀</button>
+                    <div class="flex-1 flex flex-col gap-1">
+                        <input id="piano-scroll-scrubber" type="range" min="0" max="1000" value="350" aria-label="Desplazar octavas del piano" class="w-full">
+                        <div class="flex justify-between px-0.5 text-[10px] font-mono text-zinc-500">
+                            <span>C2</span>
+                            <span>C3</span>
+                            <span>C4</span>
+                            <span>C5</span>
+                            <span>C6</span>
+                            <span>C7</span>
+                        </div>
+                    </div>
+                    <button id="btn-scroll-right" type="button" class="px-2.5 py-1.5 rounded-lg bg-studio-800 hover:bg-studio-700 active:scale-95 border border-zinc-700 text-xs font-bold text-zinc-200 cursor-pointer shrink-0" aria-label="Desplazar a octava siguiente">▶</button>
+                </div>
+                <div class="flex items-center justify-between gap-2 text-[11px]">
+                    <span id="mobile-scroll-hint" class="text-zinc-400">👆 Desliza sobre las teclas o usa la barra</span>
+                    <button id="btn-toggle-fit-piano" type="button" class="px-2.5 py-1 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 font-semibold transition-all cursor-pointer shrink-0">
+                        ⤢ Ver 5 Octavas
+                    </button>
                 </div>
             </div>
         </section>
@@ -673,6 +730,7 @@
             autoSpeed: false,
             metronomeClick: false,
             midiConnected: false,
+            fitAllPiano: false,
             masteredIds: Array.isArray(saved.masteredIds) ? saved.masteredIds : [],
             bestBpmByEx: saved.bestBpmByEx && typeof saved.bestBpmByEx === 'object' ? saved.bestBpmByEx : {},
             practiceSeconds: typeof saved.practiceSeconds === 'number' ? saved.practiceSeconds : 0,
@@ -1340,6 +1398,82 @@
             }
         }
 
+        function ensureKeysVisibleOnScroll(keys, instant = false) {
+            if (state.fitAllPiano || !keys || keys.length === 0) return;
+            const scrollWrapper = document.getElementById('piano-scroll-wrapper');
+            if (!scrollWrapper) return;
+            const maxScroll = scrollWrapper.scrollWidth - scrollWrapper.clientWidth;
+            if (maxScroll <= 4) return;
+
+            const minK = Math.min(...keys);
+            const maxK = Math.max(...keys);
+            const minEl = document.querySelector(`#piano-keyboard [data-key-index="${minK}"]`);
+            const maxEl = document.querySelector(`#piano-keyboard [data-key-index="${maxK}"]`);
+            if (!minEl || !maxEl) return;
+
+            const wrapRect = scrollWrapper.getBoundingClientRect();
+            const minRect = minEl.getBoundingClientRect();
+            const maxRect = maxEl.getBoundingClientRect();
+            const margin = 22;
+
+            const isFullyVisible = (minRect.left >= wrapRect.left + margin) && (maxRect.right <= wrapRect.right - margin);
+            if (!isFullyVisible) {
+                const centerPx = scrollWrapper.scrollLeft + ((minRect.left + maxRect.right) / 2 - wrapRect.left);
+                const targetLeft = Math.max(0, Math.min(maxScroll, centerPx - scrollWrapper.clientWidth / 2));
+                scrollWrapper.scrollTo({
+                    left: targetLeft,
+                    behavior: instant ? 'auto' : 'smooth'
+                });
+            }
+        }
+
+        function syncScrubberFromScroll() {
+            const scrollWrapper = document.getElementById('piano-scroll-wrapper');
+            const scrubber = document.getElementById('piano-scroll-scrubber');
+            if (!scrollWrapper || !scrubber) return;
+            const maxScroll = scrollWrapper.scrollWidth - scrollWrapper.clientWidth;
+            if (maxScroll <= 0) {
+                scrubber.value = '0';
+            } else {
+                scrubber.value = String(Math.round((scrollWrapper.scrollLeft / maxScroll) * 1000));
+            }
+        }
+
+        function updateMobilePianoNav() {
+            const scrollWrapper = document.getElementById('piano-scroll-wrapper');
+            const pianoBed = document.getElementById('piano-bed');
+            const nav = document.getElementById('mobile-piano-nav');
+            const scrubberRow = document.getElementById('mobile-scrubber-row');
+            const hint = document.getElementById('mobile-scroll-hint');
+            const toggleBtn = document.getElementById('btn-toggle-fit-piano');
+            if (!scrollWrapper || !pianoBed || !nav) return;
+
+            const needsMobileNav = scrollWrapper.clientWidth < 1120;
+            if (!needsMobileNav) {
+                state.fitAllPiano = false;
+                pianoBed.classList.remove('fit-all');
+                nav.classList.add('hidden');
+                nav.classList.remove('flex');
+                return;
+            }
+
+            nav.classList.remove('hidden');
+            nav.classList.add('flex');
+
+            if (state.fitAllPiano) {
+                pianoBed.classList.add('fit-all');
+                if (scrubberRow) scrubberRow.classList.add('hidden');
+                if (hint) hint.textContent = '🎹 Mostrando las 5 octavas completas (C2–C7)';
+                if (toggleBtn) toggleBtn.textContent = '🔍 Teclas Grandes';
+            } else {
+                pianoBed.classList.remove('fit-all');
+                if (scrubberRow) scrubberRow.classList.remove('hidden');
+                if (hint) hint.textContent = '👆 Desliza sobre las teclas o usa la barra';
+                if (toggleBtn) toggleBtn.textContent = '⤢ Ver 5 Octavas';
+                syncScrubberFromScroll();
+            }
+        }
+
         function clearActiveStepVisuals() {
             if (state.visualClearTimerId) {
                 clearTimeout(state.visualClearTimerId);
@@ -1459,6 +1593,7 @@
             updateFingerHUD(rhFingers, lhFingers);
             renderMonitorForStep(stepIdx, isFixedStep);
             setLiveStatusDot(isFixedStep ? 'paused' : 'playing');
+            ensureKeysVisibleOnScroll(keysToPlay, !isFixedStep && state.bpm > 115);
 
             if (!isFixedStep) {
                 const clearDelay = Math.max(110, (60 / state.bpm) * 410);
@@ -1683,6 +1818,7 @@
             const { rhFingers, lhFingers } = getStepFingers(step);
             updateFingerHUD(rhFingers, lhFingers);
             setLiveStatusDot('practice');
+            ensureKeysVisibleOnScroll([...required], false);
 
             // Ajustar octava PC automáticamente solo si hace falta (sin romper teclas ya pulsadas gracias a Map por tecla)
             const reqArr = [...required];
@@ -1734,7 +1870,7 @@
             }
 
             // En ratón/táctil permitir capturar acordes o ambas manos de forma acumulativa
-            const isPointerInput = sourceId === 'mouse' || sourceId === 'touch';
+            const isPointerInput = sourceId === 'mouse' || (typeof sourceId === 'string' && sourceId.startsWith('touch'));
             if (isPointerInput) {
                 state.practiceLatchedKeys.add(pressedKey);
                 const keyEl = document.querySelector(`#piano-keyboard [data-key-index="${pressedKey}"]`);
@@ -1848,10 +1984,14 @@
             if (keyEl) keyEl.classList.remove('pressed');
         }
 
+        let lastTouchEventTime = 0;
+
         function attachManualKeyEvents(el, keyIndex) {
             let mouseActive = false;
+            const activeTouches = new Map(); // touchId -> { startX, startY, moved, triggered, timer }
 
             el.addEventListener('mousedown', (e) => {
+                if (Date.now() - lastTouchEventTime < 600) return;
                 e.preventDefault();
                 mouseActive = true;
                 pressKeyDown(keyIndex, 0.48, 'mouse');
@@ -1868,12 +2008,73 @@
                     releaseKeyUp(keyIndex, 'mouse');
                 }
             });
+
+            // Eventos táctiles pasivos: permiten deslizar el piano libremente en móvil sin bloquear scroll
             el.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                pressKeyDown(keyIndex, 0.48, 'touch');
-            }, { passive: false });
-            el.addEventListener('touchend', () => releaseKeyUp(keyIndex, 'touch'));
-            el.addEventListener('touchcancel', () => releaseKeyUp(keyIndex, 'touch'));
+                lastTouchEventTime = Date.now();
+                for (const t of e.changedTouches) {
+                    const sourceId = `touch:${t.identifier}`;
+                    const rec = {
+                        startX: t.clientX,
+                        startY: t.clientY,
+                        moved: false,
+                        triggered: false,
+                        sourceId,
+                        timer: null
+                    };
+                    rec.timer = setTimeout(() => {
+                        rec.timer = null;
+                        if (!rec.moved && activeTouches.has(t.identifier)) {
+                            rec.triggered = true;
+                            pressKeyDown(keyIndex, 0.48, sourceId);
+                        }
+                    }, 55);
+                    activeTouches.set(t.identifier, rec);
+                }
+            }, { passive: true });
+
+            el.addEventListener('touchmove', (e) => {
+                for (const t of e.changedTouches) {
+                    const rec = activeTouches.get(t.identifier);
+                    if (!rec || rec.moved) continue;
+                    const dx = t.clientX - rec.startX;
+                    const dy = t.clientY - rec.startY;
+                    if (Math.hypot(dx, dy) > 8) {
+                        rec.moved = true;
+                        if (rec.timer) {
+                            clearTimeout(rec.timer);
+                            rec.timer = null;
+                        }
+                        if (rec.triggered) {
+                            rec.triggered = false;
+                            releaseKeyUp(keyIndex, rec.sourceId);
+                        }
+                    }
+                }
+            }, { passive: true });
+
+            const finishTouch = (e, isCancel) => {
+                lastTouchEventTime = Date.now();
+                for (const t of e.changedTouches) {
+                    const rec = activeTouches.get(t.identifier);
+                    if (!rec) continue;
+                    activeTouches.delete(t.identifier);
+                    if (rec.timer) {
+                        clearTimeout(rec.timer);
+                        rec.timer = null;
+                    }
+                    if (rec.triggered) {
+                        releaseKeyUp(keyIndex, rec.sourceId);
+                    } else if (!isCancel && !rec.moved) {
+                        // Toque rápido (< 55ms): disparar nota limpia con liberación corta
+                        pressKeyDown(keyIndex, 0.48, rec.sourceId);
+                        setTimeout(() => releaseKeyUp(keyIndex, rec.sourceId), 150);
+                    }
+                }
+            };
+
+            el.addEventListener('touchend', (e) => finishTouch(e, false), { passive: true });
+            el.addEventListener('touchcancel', (e) => finishTouch(e, true), { passive: true });
         }
 
         function setPcOctaveShift(shiftVal) {
@@ -2023,12 +2224,20 @@
             const pauseB = clone.querySelector('#btn-pause');
             if (pauseB) pauseB.classList.add('hidden');
 
+            const bedClone = clone.querySelector('#piano-bed');
+            if (bedClone) bedClone.classList.remove('fit-all');
+            const mobileNavClone = clone.querySelector('#mobile-piano-nav');
+            if (mobileNavClone) {
+                mobileNavClone.classList.add('hidden');
+                mobileNavClone.classList.remove('flex');
+            }
+
             const htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
             const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'PianoTech_Studio_Pro_v1_0_Final.html';
+            a.download = 'index.html';
             a.click();
             URL.revokeObjectURL(url);
         }
@@ -2044,9 +2253,46 @@
             setLiveStatusDot('ready');
 
             const scrollWrapper = document.getElementById('piano-scroll-wrapper');
+            const scrubber = document.getElementById('piano-scroll-scrubber');
+            const btnScrollLeft = document.getElementById('btn-scroll-left');
+            const btnScrollRight = document.getElementById('btn-scroll-right');
+            const btnToggleFit = document.getElementById('btn-toggle-fit-piano');
+
             if (scrollWrapper) {
                 scrollWrapper.scrollLeft = Math.max(0, (scrollWrapper.scrollWidth - scrollWrapper.clientWidth) * 0.35);
+                scrollWrapper.addEventListener('scroll', syncScrubberFromScroll, { passive: true });
             }
+            if (scrubber && scrollWrapper) {
+                scrubber.addEventListener('input', (e) => {
+                    const maxScroll = scrollWrapper.scrollWidth - scrollWrapper.clientWidth;
+                    if (maxScroll > 0) {
+                        scrollWrapper.scrollLeft = (parseInt(e.target.value, 10) / 1000) * maxScroll;
+                    }
+                });
+            }
+            if (btnScrollLeft && scrollWrapper) {
+                btnScrollLeft.addEventListener('click', () => {
+                    const stepPx = Math.max(180, Math.round(scrollWrapper.scrollWidth / 5));
+                    scrollWrapper.scrollBy({ left: -stepPx, behavior: 'smooth' });
+                });
+            }
+            if (btnScrollRight && scrollWrapper) {
+                btnScrollRight.addEventListener('click', () => {
+                    const stepPx = Math.max(180, Math.round(scrollWrapper.scrollWidth / 5));
+                    scrollWrapper.scrollBy({ left: stepPx, behavior: 'smooth' });
+                });
+            }
+            if (btnToggleFit) {
+                btnToggleFit.addEventListener('click', () => {
+                    state.fitAllPiano = !state.fitAllPiano;
+                    updateMobilePianoNav();
+                    if (!state.fitAllPiano) {
+                        highlightPatternRange(true);
+                    }
+                });
+            }
+            updateMobilePianoNav();
+            window.addEventListener('resize', updateMobilePianoNav);
 
             // Cronómetro de tiempo acumulado de práctica
             setInterval(() => {
