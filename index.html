@@ -359,10 +359,10 @@
     <!-- Contenido Principal -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-4">
 
-        <!-- Fila Superior: Biblioteca de 60 Estudios + Estudio Activo -->
+        <!-- Fila Superior: Biblioteca de 120 Estudios + Estudio Activo -->
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
 
-            <!-- Columna Izquierda: Catálogo de 60 Ejercicios -->
+            <!-- Columna Izquierda: Catálogo de 120 Ejercicios -->
             <div class="lg:col-span-5 bg-studio-900 border border-zinc-800/90 rounded-2xl p-4 flex flex-col shadow-xl">
                 <div class="flex flex-col flex-1 min-h-0 space-y-2.5">
                     <div class="flex items-center justify-between gap-2">
@@ -412,13 +412,19 @@
                     <div id="exercises-list" class="h-[380px] max-h-[380px] flex flex-col gap-1.5 overflow-y-auto pr-1"></div>
                 </div>
 
-                <div class="flex items-center justify-between pt-2.5 mt-2.5 border-t border-zinc-800 text-xs shrink-0">
-                    <button id="btn-prev-ex" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-studio-800 hover:bg-studio-700 text-zinc-300 font-medium transition-all cursor-pointer">
-                        <span>← Anterior</span>
+                <div class="flex items-center justify-between gap-1.5 pt-2.5 mt-2.5 border-t border-zinc-800 text-xs shrink-0">
+                    <button id="btn-prev-ex" type="button" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-studio-800 hover:bg-studio-700 text-zinc-300 font-medium transition-all cursor-pointer shrink-0" title="Estudio anterior">
+                        <span>←</span><span class="hidden sm:inline">Anterior</span>
                     </button>
-                    <span id="exercise-counter-label" class="font-mono text-zinc-400">Estudio 1 / 120</span>
-                    <button id="btn-next-ex" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-studio-800 hover:bg-studio-700 text-zinc-300 font-medium transition-all cursor-pointer">
-                        <span>Siguiente →</span>
+                    <div class="flex items-center gap-2 min-w-0">
+                        <button id="btn-random-ex" type="button" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/35 active:scale-95 border border-indigo-500/45 text-indigo-200 font-semibold transition-all cursor-pointer shrink-0 shadow-sm" title="Elegir estudio aleatorio según los filtros activos">
+                            <span id="random-dice-icon" class="inline-block transition-transform duration-300">🎲</span>
+                            <span>Aleatorio</span>
+                        </button>
+                        <span id="exercise-counter-label" class="font-mono text-[11px] text-zinc-400 whitespace-nowrap">1 / 120</span>
+                    </div>
+                    <button id="btn-next-ex" type="button" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-studio-800 hover:bg-studio-700 text-zinc-300 font-medium transition-all cursor-pointer shrink-0" title="Siguiente estudio">
+                        <span class="hidden sm:inline">Siguiente</span><span>→</span>
                     </button>
                 </div>
             </div>
@@ -609,7 +615,7 @@
         }
 
         // =========================================================================
-        // CATÁLOGO COMPLETO AUDITADO DE 60 ESTUDIOS DE TÉCNICA PIANÍSTICA
+        // CATÁLOGO COMPLETO AUDITADO DE 120 ESTUDIOS DE TÉCNICA PIANÍSTICA
         // =========================================================================
         const EXERCISES_DB = [
             // 1. HANON & ARTICULACIÓN (10)
@@ -1257,11 +1263,28 @@
             document.getElementById('practice-time-badge').textContent = `⏱ ${formatDuration(state.practiceSeconds)}`;
 
             const filteredIdx = filtered.findIndex(e => e.id === state.exerciseId);
-            if (filteredIdx !== -1) {
-                document.getElementById('exercise-counter-label').textContent = `Estudio ${filteredIdx + 1} / ${filtered.length}`;
-            } else {
-                const allIdx = EXERCISES_DB.findIndex(e => e.id === state.exerciseId);
-                document.getElementById('exercise-counter-label').textContent = `Estudio #${allIdx + 1} (${filtered.length} visibles)`;
+            const counterEl = document.getElementById('exercise-counter-label');
+            if (counterEl) {
+                if (filteredIdx !== -1) {
+                    counterEl.textContent = `${filteredIdx + 1} / ${filtered.length}`;
+                } else {
+                    const allIdx = EXERCISES_DB.findIndex(e => e.id === state.exerciseId);
+                    counterEl.textContent = `#${allIdx + 1} (${filtered.length})`;
+                }
+            }
+
+            const randBtn = document.getElementById('btn-random-ex');
+            if (randBtn) {
+                const parts = [];
+                if (state.difficultyFilter !== 'all') parts.push(state.difficultyFilter);
+                if (state.categoryFilter !== 'all') parts.push(state.categoryFilter);
+                const scopeLabel = parts.length > 0 ? parts.join(' · ') : 'Todos los estudios';
+                randBtn.title = filtered.length > 0
+                    ? `Estudio aleatorio en ${scopeLabel} (${filtered.length} disponibles)`
+                    : 'No hay estudios con los filtros actuales';
+                randBtn.disabled = filtered.length === 0;
+                randBtn.classList.toggle('opacity-40', filtered.length === 0);
+                randBtn.classList.toggle('pointer-events-none', filtered.length === 0);
             }
 
             if (filtered.length === 0) {
@@ -2250,6 +2273,39 @@
             }
         }
 
+        let randomDiceRotation = 0;
+
+        function pickRandomExercise() {
+            const pool = getFilteredExercises();
+            if (pool.length === 0) return;
+
+            const candidates = pool.length > 1
+                ? pool.filter(ex => ex.id !== state.exerciseId)
+                : pool;
+
+            const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+            if (!chosen) return;
+
+            const diceIcon = document.getElementById('random-dice-icon');
+            if (diceIcon) {
+                randomDiceRotation += 360;
+                diceIcon.style.transform = `rotate(${randomDiceRotation}deg)`;
+            }
+
+            selectExercise(chosen.id);
+
+            if (!state.practiceMode) {
+                const scopeParts = [];
+                if (state.difficultyFilter !== 'all') scopeParts.push(state.difficultyFilter);
+                if (state.categoryFilter !== 'all') scopeParts.push(state.categoryFilter);
+                const scopeText = scopeParts.length > 0 ? scopeParts.join(' · ') : 'Todos';
+                const monitor = document.getElementById('live-step-monitor');
+                if (monitor) {
+                    monitor.innerHTML = `🎲 Aleatorio (${scopeText}): <strong class="text-white">#${String(chosen.id).padStart(2, '0')} ${chosen.title}</strong>`;
+                }
+            }
+        }
+
         // =========================================================================
         // SOPORTE WEB MIDI API (88 TECLAS + PEDAL SUSTAIN CC 64 + DETECCIÓN IFRAME)
         // =========================================================================
@@ -2373,6 +2429,8 @@
             if (dI) dI.className = 'px-1.5 py-1 rounded-lg text-amber-300/80 hover:bg-studio-800 transition-all cursor-pointer truncate';
             const dA = clone.querySelector('#btn-diff-avanzado');
             if (dA) dA.className = 'px-1.5 py-1 rounded-lg text-rose-300/80 hover:bg-studio-800 transition-all cursor-pointer truncate';
+            const diceClone = clone.querySelector('#random-dice-icon');
+            if (diceClone) diceClone.style.transform = '';
 
             const htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
             const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
@@ -2566,6 +2624,7 @@
                 const nextIdx = idx === -1 ? 0 : (idx + 1) % pool.length;
                 selectExercise(pool[nextIdx].id);
             });
+            document.getElementById('btn-random-ex').addEventListener('click', pickRandomExercise);
 
             // Marcar como Dominado
             document.getElementById('btn-mark-mastered').addEventListener('click', () => {
