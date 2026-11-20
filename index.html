@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PianoTech Studio Pro v1.0 - Conservatorio Interactivo (60 Études)</title>
+    <title>PianoTech Studio Pro v2.0 - Conservatorio Interactivo (120 Études)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <script>
@@ -282,7 +282,7 @@
                 </div>
                 <div>
                     <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white flex items-center gap-2">
-                        PianoTech <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">v1.0 FINAL · 60 ÉTUDES</span>
+                        PianoTech <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">v2.0 · 120 ÉTUDES</span>
                     </h1>
                     <p class="text-[11px] text-zinc-400 hidden sm:block">Conservatorio Interactivo · 5 Octavas (C2–C7) · Práctica Guiada, Sustain &amp; MIDI</p>
                 </div>
@@ -367,40 +367,56 @@
                 <div class="flex flex-col flex-1 min-h-0 space-y-2.5">
                     <div class="flex items-center justify-between gap-2">
                         <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">
-                            Biblioteca (<span id="exercise-count-badge">60</span> Estudios)
+                            Biblioteca (<span id="exercise-count-badge">120</span> Estudios)
                         </span>
                         <div class="flex items-center gap-2">
                             <span id="practice-time-badge" class="text-[11px] font-mono bg-studio-800 text-zinc-300 px-2 py-0.5 rounded-full border border-zinc-700" title="Tiempo total de práctica">
                                 ⏱ 00:00
                             </span>
                             <span id="mastered-counter" class="text-[11px] font-mono bg-emerald-500/15 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                                ★ 0/60
+                                ★ 0/120
                             </span>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <input id="search-input" type="text" placeholder="Buscar estudio, técnica o #..." class="w-full bg-studio-950 border border-zinc-700/80 text-xs text-white rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-zinc-500">
+                        <input id="search-input" type="text" placeholder="Buscar estudio, técnica, nivel o #..." class="w-full bg-studio-950 border border-zinc-700/80 text-xs text-white rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-zinc-500">
                         <select id="category-filter" class="bg-studio-800 border border-zinc-700 text-xs text-zinc-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
-                            <option value="all">Todas las categorías (60)</option>
-                            <option value="Hanon">1. Hanon &amp; Articulación (10)</option>
-                            <option value="Independencia">2. Independencia &amp; Fuerza (10)</option>
-                            <option value="Escalas">3. Paso de Pulgar &amp; Escalas (10)</option>
-                            <option value="Arpegios">4. Arpegios &amp; Saltos (8)</option>
-                            <option value="Ornamentos">5. Trinos &amp; Dobles Notas (6)</option>
-                            <option value="Ritmo">6. Jazz, Polirritmia &amp; Estilos (6)</option>
-                            <option value="Repertorio">7. Repertorio Clásico &amp; Virtuosismo (10)</option>
+                            <option value="all">Todas las categorías (120)</option>
+                            <option value="Hanon">1. Hanon &amp; Articulación (20)</option>
+                            <option value="Independencia">2. Independencia &amp; Fuerza (18)</option>
+                            <option value="Escalas">3. Paso de Pulgar &amp; Escalas (20)</option>
+                            <option value="Arpegios">4. Arpegios &amp; Saltos (16)</option>
+                            <option value="Ornamentos">5. Trinos &amp; Dobles Notas (14)</option>
+                            <option value="Ritmo">6. Jazz, Polirritmia &amp; Estilos (14)</option>
+                            <option value="Repertorio">7. Repertorio Clásico &amp; Virtuosismo (18)</option>
                         </select>
                     </div>
 
-                    <div id="exercises-list" class="h-[415px] max-h-[415px] flex flex-col gap-1.5 overflow-y-auto pr-1"></div>
+                    <!-- Filtro rápido de Dificultad (40 Principiante · 40 Intermedio · 40 Avanzado) -->
+                    <div class="grid grid-cols-4 gap-1 bg-studio-950 p-1 rounded-xl border border-zinc-800/90 text-[10.5px] font-semibold">
+                        <button id="btn-diff-all" type="button" class="px-1.5 py-1 rounded-lg bg-indigo-600 text-white transition-all cursor-pointer truncate">
+                            Todos <span id="count-diff-all" class="font-mono opacity-85">(120)</span>
+                        </button>
+                        <button id="btn-diff-principiante" type="button" class="px-1.5 py-1 rounded-lg text-emerald-300/80 hover:bg-studio-800 transition-all cursor-pointer truncate">
+                            Princ. <span id="count-diff-principiante" class="font-mono opacity-80">(40)</span>
+                        </button>
+                        <button id="btn-diff-intermedio" type="button" class="px-1.5 py-1 rounded-lg text-amber-300/80 hover:bg-studio-800 transition-all cursor-pointer truncate">
+                            Inter. <span id="count-diff-intermedio" class="font-mono opacity-80">(40)</span>
+                        </button>
+                        <button id="btn-diff-avanzado" type="button" class="px-1.5 py-1 rounded-lg text-rose-300/80 hover:bg-studio-800 transition-all cursor-pointer truncate">
+                            Avanz. <span id="count-diff-avanzado" class="font-mono opacity-80">(40)</span>
+                        </button>
+                    </div>
+
+                    <div id="exercises-list" class="h-[380px] max-h-[380px] flex flex-col gap-1.5 overflow-y-auto pr-1"></div>
                 </div>
 
                 <div class="flex items-center justify-between pt-2.5 mt-2.5 border-t border-zinc-800 text-xs shrink-0">
                     <button id="btn-prev-ex" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-studio-800 hover:bg-studio-700 text-zinc-300 font-medium transition-all cursor-pointer">
                         <span>← Anterior</span>
                     </button>
-                    <span id="exercise-counter-label" class="font-mono text-zinc-400">Estudio 1 / 60</span>
+                    <span id="exercise-counter-label" class="font-mono text-zinc-400">Estudio 1 / 120</span>
                     <button id="btn-next-ex" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-studio-800 hover:bg-studio-700 text-zinc-300 font-medium transition-all cursor-pointer">
                         <span>Siguiente →</span>
                     </button>
@@ -416,7 +432,7 @@
                             <div class="flex items-center gap-2 flex-wrap">
                                 <span id="ex-number-badge" class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono font-bold text-xs border border-indigo-500/30">#01</span>
                                 <span id="ex-category-badge" class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Hanon &amp; Articulación</span>
-                                <span id="ex-difficulty-badge" class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Nivel Básico</span>
+                                <span id="ex-difficulty-badge" class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Nivel Principiante</span>
                                 <span id="ex-best-bpm-badge" class="hidden text-[11px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">🏆 Récord: 100 BPM</span>
                             </div>
                             <h2 id="ex-title" class="text-lg sm:text-xl font-bold text-white mt-1">Hanon N.º 1: Apertura y Fuerza 1–2</h2>
@@ -574,7 +590,7 @@
     <!-- Footer -->
     <footer class="border-t border-zinc-800/60 bg-studio-950 py-3 mt-4">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-zinc-500">
-            <p>PianoTech Studio Pro v1.0 Final &bull; 60 Estudios de Técnica Pianística (5 Octavas C2–C7), Entrenador Interactivo y Web MIDI</p>
+            <p>PianoTech Studio Pro v2.0 &bull; 120 Estudios de Técnica Pianística (40 Principiante · 40 Intermedio · 40 Avanzado) &bull; 5 Octavas y Web MIDI</p>
             <p class="font-mono">Atajos: [Espacio] Play/Pausa &bull; [→] Paso &bull; [↑/↓] Octava PC &bull; Teclado [Z-M / Q-P]</p>
         </div>
     </footer>
@@ -597,9 +613,9 @@
         // =========================================================================
         const EXERCISES_DB = [
             // 1. HANON & ARTICULACIÓN (10)
-            { id: 1, category: 'Hanon', difficulty: 'Básico', title: 'Hanon N.º 1: Apertura y Fuerza 1–2', formula: '1-2-3-4-5-4-3-2', goal: 'Desarrolla la apertura entre los dedos 1 y 2 y fortalece el ataque ascendente y descendente.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:5,rh:3,lh:3},{offset:7,rh:4,lh:2},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:4,rh:2,lh:4}] },
-            { id: 2, category: 'Hanon', difficulty: 'Básico', title: 'Hanon N.º 2: Independencia 3–4–5', formula: '1-2-5-4-3-4-2-3', goal: 'Trabaja directamente los dedos débiles (anular y meñique) mediante saltos controlados.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:7,rh:4,lh:2},{offset:4,rh:2,lh:4},{offset:5,rh:3,lh:3}] },
-            { id: 3, category: 'Hanon', difficulty: 'Básico', title: 'Hanon N.º 3: Flexibilidad de Muñeca', formula: '1-2-5-4-3-2-3-4', goal: 'Equilibra el peso de la mano al bajar desde el dedo 5 hacia el centro de la mano.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:4,rh:2,lh:4},{offset:5,rh:3,lh:3},{offset:7,rh:4,lh:2}] },
+            { id: 1, category: 'Hanon', difficulty: 'Principiante', title: 'Hanon N.º 1: Apertura y Fuerza 1–2', formula: '1-2-3-4-5-4-3-2', goal: 'Desarrolla la apertura entre los dedos 1 y 2 y fortalece el ataque ascendente y descendente.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:5,rh:3,lh:3},{offset:7,rh:4,lh:2},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:4,rh:2,lh:4}] },
+            { id: 2, category: 'Hanon', difficulty: 'Principiante', title: 'Hanon N.º 2: Independencia 3–4–5', formula: '1-2-5-4-3-4-2-3', goal: 'Trabaja directamente los dedos débiles (anular y meñique) mediante saltos controlados.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:7,rh:4,lh:2},{offset:4,rh:2,lh:4},{offset:5,rh:3,lh:3}] },
+            { id: 3, category: 'Hanon', difficulty: 'Principiante', title: 'Hanon N.º 3: Flexibilidad de Muñeca', formula: '1-2-5-4-3-2-3-4', goal: 'Equilibra el peso de la mano al bajar desde el dedo 5 hacia el centro de la mano.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:4,rh:2,lh:4},{offset:5,rh:3,lh:3},{offset:7,rh:4,lh:2}] },
             { id: 4, category: 'Hanon', difficulty: 'Intermedio', title: 'Hanon N.º 4: Doble Apertura 1–2 y 4–5', formula: '1-2-1-2-5-4-3-2', goal: 'Combina extensión entre 1-2 con agilidad entre 3-4-5 para pasajes rápidos.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:4,rh:2,lh:4}] },
             { id: 5, category: 'Hanon', difficulty: 'Intermedio', title: 'Hanon N.º 5: Salto de Sexta y Descenso', formula: '1-5-4-5-3-4-2-3', goal: 'Entrena la precisión de alcance en sexta y la articulación clara en el descenso.', steps: [{offset:0,rh:1,lh:5},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:9,rh:5,lh:1},{offset:5,rh:3,lh:3},{offset:7,rh:4,lh:2},{offset:4,rh:2,lh:4},{offset:5,rh:3,lh:3}] },
             { id: 6, category: 'Hanon', difficulty: 'Intermedio', title: 'Hanon N.º 6: Pivote sobre el Meñique (5)', formula: '1-5-4-5-3-5-2-5', goal: 'Fortalece el dedo 5 como eje superior mientras los demás dedos articulan notas interiores.', steps: [{offset:0,rh:1,lh:5},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:9,rh:5,lh:1},{offset:5,rh:3,lh:3},{offset:9,rh:5,lh:1},{offset:4,rh:2,lh:4},{offset:9,rh:5,lh:1}] },
@@ -609,8 +625,8 @@
             { id: 10, category: 'Hanon', difficulty: 'Avanzado', title: 'Hanon N.º 10: Trino Preparatorio 4–3', formula: '1-5-4-3-4-3-4-3', goal: 'Prepara la mano para trinos sostenidos con los dedos 4 y 3 sin tensión en el antebrazo.', steps: [{offset:0,rh:1,lh:5},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3}] },
 
             // 2. INDEPENDENCIA & FUERZA (10)
-            { id: 11, category: 'Independencia', difficulty: 'Básico', title: 'Cinco Dedos Ligados (Legato Puro)', formula: '1-2-3-4-5-4-3-2-1', goal: 'Control de transferencia de peso de un dedo a otro sin solapamientos ni huecos.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
-            { id: 12, category: 'Independencia', difficulty: 'Básico', title: 'Terceras Quebradas (Salto de Dedo)', formula: '1-3-2-4-3-5-4-2-1', goal: 'Coordina la alternancia de dedos no adyacentes (1-3, 2-4, 3-5) con pulso uniforme.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 11, category: 'Independencia', difficulty: 'Principiante', title: 'Cinco Dedos Ligados (Legato Puro)', formula: '1-2-3-4-5-4-3-2-1', goal: 'Control de transferencia de peso de un dedo a otro sin solapamientos ni huecos.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 12, category: 'Independencia', difficulty: 'Principiante', title: 'Terceras Quebradas (Salto de Dedo)', formula: '1-3-2-4-3-5-4-2-1', goal: 'Coordina la alternancia de dedos no adyacentes (1-3, 2-4, 3-5) con pulso uniforme.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
             { id: 13, category: 'Independencia', difficulty: 'Intermedio', title: 'Czerny Op. 599: Cascada Descendente', formula: '5-4-3-2-1-2-3-4', goal: 'Agilidad brillante comenzando desde el dedo 5 hacia el pulgar con ataque limpio.', steps: [{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2}] },
             { id: 14, category: 'Independencia', difficulty: 'Intermedio', title: 'Bajo de Alberti Clásico (Mozart/Haydn)', formula: '5-1-3-1-5-1-3-1 (MI)', goal: 'Domina el acompañamiento clásico manteniendo un pulgar ligero y sin acentos bruscos.', steps: [{offset:0,rh:1,lh:5},{offset:7,rh:5,lh:1},{offset:4,rh:3,lh:3},{offset:7,rh:5,lh:1},{offset:0,rh:1,lh:5},{offset:7,rh:5,lh:1},{offset:4,rh:3,lh:3},{offset:7,rh:5,lh:1}] },
             { id: 15, category: 'Independencia', difficulty: 'Avanzado', title: 'Dohnányi: Independencia Anular (4–5–4–3)', formula: '4-5-4-3-4-5-4-3', goal: 'Aísla el movimiento del cuarto dedo evitando que arrastre al medio o meñique.', steps: [{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3}] },
@@ -621,14 +637,14 @@
             { id: 20, category: 'Independencia', difficulty: 'Avanzado', title: 'Sextas Quebradas Rotatorias (1–5 / 2–4)', formula: '1-5-2-4-1-5-2-4', goal: 'Rotación lateral de muñeca (pronación y supinación) sin rigidez en los dedos.', steps: [{offset:0,rh:1,lh:5},{offset:9,rh:5,lh:1},{offset:2,rh:2,lh:4},{offset:7,rh:4,lh:2},{offset:0,rh:1,lh:5},{offset:9,rh:5,lh:1},{offset:2,rh:2,lh:4},{offset:7,rh:4,lh:2}] },
 
             // 3. PASO DE PULGAR & ESCALAS (10)
-            { id: 21, category: 'Escalas', difficulty: 'Básico', title: 'Paso de Pulgar Corto (1–2–3–1)', formula: '1-2-3-1-2-3-2-1-3-2', goal: 'Domina el paso silencioso del pulgar por debajo del dedo 3 sin levantar el codo.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:1,lh:2},{offset:7,rh:2,lh:1},{offset:9,rh:3,lh:3},{offset:7,rh:2,lh:1},{offset:5,rh:1,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4}] },
+            { id: 21, category: 'Escalas', difficulty: 'Principiante', title: 'Paso de Pulgar Corto (1–2–3–1)', formula: '1-2-3-1-2-3-2-1-3-2', goal: 'Domina el paso silencioso del pulgar por debajo del dedo 3 sin levantar el codo.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:1,lh:2},{offset:7,rh:2,lh:1},{offset:9,rh:3,lh:3},{offset:7,rh:2,lh:1},{offset:5,rh:1,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4}] },
             { id: 22, category: 'Escalas', difficulty: 'Intermedio', title: 'Paso de Pulgar Largo (1–2–3–4–1)', formula: '1-2-3-4-1-4-3-2', goal: 'Entrena el cruce amplio debajo del cuarto dedo, clave para escalas de varias octavas.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:7,rh:1,lh:1},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4}] },
             { id: 23, category: 'Escalas', difficulty: 'Intermedio', title: 'Escala Mayor Completa (1 Octava)', formula: '1-2-3-1-2-3-4-5', goal: 'Sincronización perfecta entre el cruce 3→1 en MD y 1→3 en MI a lo largo de la octava.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:1,lh:2},{offset:7,rh:2,lh:1},{offset:9,rh:3,lh:3},{offset:11,rh:4,lh:2},{offset:12,rh:5,lh:1},{offset:11,rh:4,lh:2},{offset:9,rh:3,lh:3},{offset:7,rh:2,lh:1},{offset:5,rh:1,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
             { id: 24, category: 'Escalas', difficulty: 'Intermedio', title: 'Escala Menor Natural (Eólica)', formula: '1-2-3-1-2-3-4-5', goal: 'Adaptación de la digitación mayor a intervalos menores (b3, b6, b7).', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:3,rh:3,lh:3},{offset:5,rh:1,lh:2},{offset:7,rh:2,lh:1},{offset:8,rh:3,lh:3},{offset:10,rh:4,lh:2},{offset:12,rh:5,lh:1},{offset:10,rh:4,lh:2},{offset:8,rh:3,lh:3},{offset:7,rh:2,lh:1},{offset:5,rh:1,lh:2},{offset:3,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
             { id: 25, category: 'Escalas', difficulty: 'Intermedio', title: 'Escala Menor Armónica (Salto b6–7)', formula: '1-2-3-1-2-3-4-5', goal: 'Controla la apertura de segunda aumentada entre los dedos 3 y 4 en el tetracordio superior.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:3,rh:3,lh:3},{offset:5,rh:1,lh:2},{offset:7,rh:2,lh:1},{offset:8,rh:3,lh:3},{offset:11,rh:4,lh:2},{offset:12,rh:5,lh:1},{offset:11,rh:4,lh:2},{offset:8,rh:3,lh:3},{offset:7,rh:2,lh:1},{offset:5,rh:1,lh:2},{offset:3,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
             { id: 26, category: 'Escalas', difficulty: 'Avanzado', title: 'Escala Cromática Estándar (1–3)', formula: '1-3-1-3-1-2-3-1-3-1-3-1-2', goal: 'Velocidad máxima en semitonos alternando pulgar exclusivamente en blancas y dedo 3 en negras.', steps: [{offset:0,rh:1,lh:1},{offset:1,rh:3,lh:3},{offset:2,rh:1,lh:1},{offset:3,rh:3,lh:3},{offset:4,rh:1,lh:2},{offset:5,rh:2,lh:1},{offset:6,rh:3,lh:3},{offset:7,rh:1,lh:1},{offset:8,rh:3,lh:3},{offset:9,rh:1,lh:1},{offset:10,rh:3,lh:3},{offset:11,rh:1,lh:2},{offset:12,rh:2,lh:1}] },
             { id: 27, category: 'Escalas', difficulty: 'Avanzado', title: 'Escala Cromática Rápida (1–2–3–4)', formula: '1-2-3-4-1-2-3-1-2-3-4-1-2', goal: 'Digitación francesa de 4 dedos para pasajes cromáticos ultrarrápidos manteniendo el pulgar solo en teclas blancas.', steps: [{offset:0,rh:1,lh:1},{offset:1,rh:2,lh:4},{offset:2,rh:3,lh:3},{offset:3,rh:4,lh:2},{offset:4,rh:1,lh:1},{offset:5,rh:2,lh:3},{offset:6,rh:3,lh:2},{offset:7,rh:1,lh:1},{offset:8,rh:2,lh:2},{offset:9,rh:3,lh:1},{offset:10,rh:4,lh:3},{offset:11,rh:1,lh:2},{offset:12,rh:2,lh:1}] },
-            { id: 28, category: 'Escalas', difficulty: 'Básico', title: 'Escala Pentatónica Mayor (Grupos 3+2)', formula: '1-2-3-1-2-3', goal: 'Fluidez en saltos de tercera menor con paso de pulgar cómodo.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:7,rh:1,lh:2},{offset:9,rh:2,lh:1},{offset:12,rh:3,lh:2},{offset:9,rh:2,lh:1},{offset:7,rh:1,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 28, category: 'Escalas', difficulty: 'Principiante', title: 'Escala Pentatónica Mayor (Grupos 3+2)', formula: '1-2-3-1-2-3', goal: 'Fluidez en saltos de tercera menor con paso de pulgar cómodo.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:7,rh:1,lh:2},{offset:9,rh:2,lh:1},{offset:12,rh:3,lh:2},{offset:9,rh:2,lh:1},{offset:7,rh:1,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
             { id: 29, category: 'Escalas', difficulty: 'Intermedio', title: 'Escala de Blues (6 Notas con Blue Note)', formula: '1-2-3-4-1-2-3', goal: 'Articulación expresiva pasando del dedo 4 en la cuarta aumentada al pulgar en la quinta, sin pulgar en negras.', steps: [{offset:0,rh:1,lh:5},{offset:3,rh:2,lh:4},{offset:5,rh:3,lh:3},{offset:6,rh:4,lh:2},{offset:7,rh:1,lh:1},{offset:10,rh:2,lh:2},{offset:12,rh:3,lh:1},{offset:10,rh:2,lh:2},{offset:7,rh:1,lh:1},{offset:6,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:3,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
             { id: 30, category: 'Escalas', difficulty: 'Intermedio', title: 'Escala de Tonos Enteros (Debussy)', formula: '1-2-1-2-3-4-5', goal: 'Simetría pura sin semitonos con digitación estándar de conservatorio (pulgar solo en teclas blancas).', steps: [{offset:0,rh:1,lh:3},{offset:2,rh:2,lh:2},{offset:4,rh:1,lh:1},{offset:6,rh:2,lh:4},{offset:8,rh:3,lh:3},{offset:10,rh:4,lh:2},{offset:12,rh:5,lh:1},{offset:10,rh:4,lh:2},{offset:8,rh:3,lh:3},{offset:6,rh:2,lh:4},{offset:4,rh:1,lh:1},{offset:2,rh:2,lh:2},{offset:0,rh:1,lh:3}] },
 
@@ -643,7 +659,7 @@
             { id: 38, category: 'Arpegios', difficulty: 'Avanzado', title: 'Arpegio Quebrado en Ondas (1-5-3-8)', formula: '1-3-2-5-2-5-3-2', goal: 'Acompañamiento romántico fluido estilo Liszt/Chopin con movimiento continuo de muñeca.', steps: [{offset:0,rh:1,lh:5},{offset:7,rh:3,lh:2},{offset:4,rh:2,lh:3},{offset:12,rh:5,lh:1},{offset:7,rh:2,lh:3},{offset:16,rh:5,lh:1},{offset:12,rh:3,lh:2},{offset:7,rh:2,lh:3}] },
 
             // 5. TRINOS & DOBLES NOTAS (6)
-            { id: 39, category: 'Ornamentos', difficulty: 'Básico', title: 'Trino Progresivo 1–2 y 2–3', formula: '1-2-1-2 · 2-3-2-3', goal: 'Control de velocidad y rebote relajado entre dedos fuertes.', steps: [{offset:0,rh:1,lh:3},{offset:2,rh:2,lh:2},{offset:0,rh:1,lh:3},{offset:2,rh:2,lh:2},{offset:2,rh:2,lh:3},{offset:4,rh:3,lh:2},{offset:2,rh:2,lh:3},{offset:4,rh:3,lh:2}] },
+            { id: 39, category: 'Ornamentos', difficulty: 'Principiante', title: 'Trino Progresivo 1–2 y 2–3', formula: '1-2-1-2 · 2-3-2-3', goal: 'Control de velocidad y rebote relajado entre dedos fuertes.', steps: [{offset:0,rh:1,lh:3},{offset:2,rh:2,lh:2},{offset:0,rh:1,lh:3},{offset:2,rh:2,lh:2},{offset:2,rh:2,lh:3},{offset:4,rh:3,lh:2},{offset:2,rh:2,lh:3},{offset:4,rh:3,lh:2}] },
             { id: 40, category: 'Ornamentos', difficulty: 'Avanzado', title: 'Trino de Resistencia 3–4 y 4–5', formula: '3-4-3-4 · 4-5-4-5', goal: 'Fortalece los pares de dedos más difíciles para trinos de concierto.', steps: [{offset:4,rh:3,lh:2},{offset:5,rh:4,lh:1},{offset:4,rh:3,lh:2},{offset:5,rh:4,lh:1},{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1}] },
             { id: 41, category: 'Ornamentos', difficulty: 'Intermedio', title: 'Terceras Paralelas Simultáneas', formula: '[1-3] → [2-4] → [3-5]', goal: 'Ataque perfectamente simultáneo de dos notas a la vez sin flam.', steps: [{offset:0,extraOffsets:[4],rh:1,rhFingers:[1,3],lh:5,lhFingers:[5,3]},{offset:2,extraOffsets:[5],rh:2,rhFingers:[2,4],lh:4,lhFingers:[4,2]},{offset:4,extraOffsets:[7],rh:3,rhFingers:[3,5],lh:3,lhFingers:[3,1]},{offset:2,extraOffsets:[5],rh:2,rhFingers:[2,4],lh:4,lhFingers:[4,2]},{offset:0,extraOffsets:[4],rh:1,rhFingers:[1,3],lh:5,lhFingers:[5,3]}] },
             { id: 42, category: 'Ornamentos', difficulty: 'Avanzado', title: 'Sextas Paralelas Ligadas', formula: '[1-4] → [1-5] → [1-5]', goal: 'Desplazamiento suave de sextas armónicas relajando la muñeca tras cada ataque.', steps: [{offset:0,extraOffsets:[9],rh:1,rhFingers:[1,4],lh:5,lhFingers:[5,1]},{offset:2,extraOffsets:[11],rh:1,rhFingers:[1,5],lh:4,lhFingers:[4,1]},{offset:4,extraOffsets:[12],rh:1,rhFingers:[1,5],lh:4,lhFingers:[4,1]},{offset:2,extraOffsets:[11],rh:1,rhFingers:[1,5],lh:4,lhFingers:[4,1]},{offset:0,extraOffsets:[9],rh:1,rhFingers:[1,4],lh:5,lhFingers:[5,1]}] },
@@ -659,16 +675,94 @@
             { id: 50, category: 'Ritmo', difficulty: 'Avanzado', title: 'Toccata Final: Velocidad y Precisión', formula: '5-1-4-1-3-1-2-1', goal: 'Estudio maestro de resistencia alternando el pulgar como pedal rítmico constante.', steps: [{offset:12,rh:5,lh:1},{offset:0,rh:1,lh:5},{offset:9,rh:4,lh:2},{offset:0,rh:1,lh:5},{offset:7,rh:3,lh:3},{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
 
             // 7. REPERTORIO CLÁSICO & VIRTUOSISMO (10)
-            { id: 51, category: 'Repertorio', difficulty: 'Básico', title: 'Bach: Preludio en Do Mayor (BWV 846)', formula: '1-2-3-4-5-3-4-5', goal: 'Arpegio transparente del Clave Bien Temperado; controla la igualdad de cada semicorchea.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:7,rh:3,lh:3},{offset:12,rh:4,lh:2},{offset:16,rh:5,lh:1},{offset:7,rh:3,lh:3},{offset:12,rh:4,lh:2},{offset:16,rh:5,lh:1}] },
+            { id: 51, category: 'Repertorio', difficulty: 'Principiante', title: 'Bach: Preludio en Do Mayor (BWV 846)', formula: '1-2-3-4-5-3-4-5', goal: 'Arpegio transparente del Clave Bien Temperado; controla la igualdad de cada semicorchea.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:7,rh:3,lh:3},{offset:12,rh:4,lh:2},{offset:16,rh:5,lh:1},{offset:7,rh:3,lh:3},{offset:12,rh:4,lh:2},{offset:16,rh:5,lh:1}] },
             { id: 52, category: 'Repertorio', difficulty: 'Intermedio', title: 'Bach: Invención N.º 1 (BWV 772)', formula: '1-2-3-4-2-3-1-5', goal: 'Motivo contrapuntístico clásico que exige claridad polifónica e independencia total.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:0,rh:1,lh:5},{offset:7,rh:5,lh:1}] },
-            { id: 53, category: 'Repertorio', difficulty: 'Intermedio', title: 'Mozart: Marcha Turca (Alla Turca)', formula: '4-3-2-3-5 · 4-3-2-3-5', goal: 'Motivo menor auténtico de Alla Turca: articulación ligera en giros rápidos con salto hacia la tercera y quinta.', steps: [{offset:2,rh:4,lh:2},{offset:0,rh:3,lh:3},{offset:-1,rh:2,lh:4},{offset:0,rh:3,lh:3},{offset:3,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:3,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:3,rh:3,lh:3},{offset:7,rh:5,lh:1}] },
-            { id: 54, category: 'Repertorio', difficulty: 'Intermedio', title: 'Beethoven: Claro de Luna (3er Mov.)', formula: '1-2-3-5-1-2-3-5', goal: 'Arpegios ascendentes en tresillos con impulso dramático hacia el dedo 5.', steps: [{offset:0,rh:1,lh:5},{offset:3,rh:2,lh:4},{offset:7,rh:3,lh:2},{offset:12,rh:5,lh:1},{offset:3,rh:1,lh:5},{offset:7,rh:2,lh:4},{offset:12,rh:3,lh:2},{offset:15,rh:5,lh:1}] },
+            { id: 53, category: 'Repertorio', difficulty: 'Intermedio', title: 'Mozart: Marcha Turca (Alla Turca)', formula: '4-3-2-3-5 · 4-3-2-3-5', goal: 'Motivo menor auténtico de Alla Turca: articulación ligera en giros rápidos con salto hacia la tercera y quinta.', steps: [{offset:2,rh:4,lh:3},{offset:0,rh:3,lh:4},{offset:-1,rh:2,lh:5},{offset:0,rh:3,lh:4},{offset:3,rh:5,lh:2},{offset:5,rh:4,lh:2},{offset:3,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:3,rh:3,lh:3},{offset:7,rh:5,lh:1}] },
+            { id: 54, category: 'Repertorio', difficulty: 'Intermedio', title: 'Beethoven: Claro de Luna (3er Mov.)', formula: '1-2-3-5 · 2-1-3-5', goal: 'Arpegios ascendentes en tresillos con impulso dramático hacia el dedo 5 sin pulgar en teclas negras.', steps: [{offset:0,rh:1,lh:5},{offset:3,rh:2,lh:4},{offset:7,rh:3,lh:2},{offset:12,rh:5,lh:1},{offset:3,rh:2,lh:4},{offset:7,rh:1,lh:2},{offset:12,rh:3,lh:1},{offset:15,rh:5,lh:2}] },
             { id: 55, category: 'Repertorio', difficulty: 'Avanzado', title: 'Chopin: Estudio Revolucionario (Op. 10/12)', formula: '5-4-3-2-1-3-2-1', goal: 'Cascada tormentosa descendente en modo menor armónico con cruce fluido del dedo 3 sobre el pulgar.', steps: [{offset:12,rh:5,lh:1},{offset:11,rh:4,lh:2},{offset:8,rh:3,lh:3},{offset:7,rh:2,lh:4},{offset:5,rh:1,lh:1},{offset:3,rh:3,lh:2},{offset:2,rh:2,lh:3},{offset:0,rh:1,lh:5}] },
             { id: 56, category: 'Repertorio', difficulty: 'Avanzado', title: 'Liszt: La Campanella (Saltos 1–5)', formula: '5-1-5-1-4-1-5-1', goal: 'Precisión milimétrica en saltos de octava y séptima repetidos con ligereza cristalina.', steps: [{offset:12,rh:5,lh:1},{offset:0,rh:1,lh:5},{offset:12,rh:5,lh:1},{offset:0,rh:1,lh:5},{offset:11,rh:4,lh:2},{offset:0,rh:1,lh:5},{offset:12,rh:5,lh:1},{offset:0,rh:1,lh:5}] },
             { id: 57, category: 'Repertorio', difficulty: 'Intermedio', title: 'Debussy: Arabesque N.º 1 (Tresillos)', formula: '5-3-2-1-2-3-5', goal: 'Suavidad impresionista en arpegios descendentes y ascendentes sin peso excesivo.', steps: [{offset:12,rh:5,lh:1},{offset:9,rh:3,lh:2},{offset:7,rh:2,lh:3},{offset:4,rh:1,lh:5},{offset:7,rh:2,lh:3},{offset:9,rh:3,lh:2},{offset:14,rh:5,lh:1}] },
             { id: 58, category: 'Repertorio', difficulty: 'Avanzado', title: 'Rachmaninoff: Acordes Rotatorios', formula: '1-3-4-5-4-3-2-3', goal: 'Despliegue amplio de acordes arpegiados románticos con proyección sonora profunda y sin pulgar en teclas negras.', steps: [{offset:0,rh:1,lh:5},{offset:7,rh:3,lh:3},{offset:12,rh:4,lh:1},{offset:15,rh:5,lh:2},{offset:12,rh:4,lh:1},{offset:7,rh:3,lh:3},{offset:3,rh:2,lh:4},{offset:7,rh:3,lh:3}] },
             { id: 59, category: 'Repertorio', difficulty: 'Avanzado', title: 'Rimsky-Korsakov: Vuelo del Moscardón', formula: '4-3-2-1 · 4-3-2-1', goal: 'Velocidad cromática descendente continua con digitación limpia sin pulgares en teclas negras.', steps: [{offset:12,rh:4,lh:1},{offset:11,rh:3,lh:2},{offset:10,rh:2,lh:3},{offset:9,rh:1,lh:1},{offset:8,rh:4,lh:2},{offset:7,rh:3,lh:3},{offset:6,rh:2,lh:4},{offset:5,rh:1,lh:5}] },
-            { id: 60, category: 'Repertorio', difficulty: 'Avanzado', title: 'Gershwin: Glissando & Arpegio Blues', formula: '1-2-3-4-1-2-3-4-[1-5]', goal: 'Cierre virtuoso combinando escala de blues extendida con remate en octava aguda sin pulgar en negras.', steps: [{offset:0,rh:1,lh:5},{offset:3,rh:2,lh:4},{offset:5,rh:3,lh:3},{offset:6,rh:4,lh:2},{offset:7,rh:1,lh:1},{offset:10,rh:2,lh:2},{offset:12,rh:3,lh:1},{offset:15,rh:4,lh:2},{offset:12,extraOffsets:[24],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1]}] }
+            { id: 60, category: 'Repertorio', difficulty: 'Avanzado', title: 'Gershwin: Glissando & Arpegio Blues', formula: '1-2-3-4-1-2-3-4-[1-5]', goal: 'Cierre virtuoso combinando escala de blues extendida con remate en octava aguda sin pulgar en negras.', steps: [{offset:0,rh:1,lh:5},{offset:3,rh:2,lh:4},{offset:5,rh:3,lh:3},{offset:6,rh:4,lh:2},{offset:7,rh:1,lh:1},{offset:10,rh:2,lh:2},{offset:12,rh:3,lh:1},{offset:15,rh:4,lh:2},{offset:12,extraOffsets:[24],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1]}] },
+
+            // =========================================================================
+            // EXPANSIÓN V2.0 (+60 ESTUDIOS -> 120 TOTAL: 40 PRINCIPIANTE · 40 INTERMEDIO · 40 AVANZADO)
+            // =========================================================================
+
+            // 1B. HANON & ARTICULACIÓN — EXPANSIÓN (+10 -> 20 TOTAL)
+            { id: 61, category: 'Hanon', difficulty: 'Principiante', title: 'Hanon Preparatorio: Escalones 1–2–3–4–5', formula: '1-2-3-2-3-4-5-4', goal: 'Calentamiento progresivo en posición cerrada de cinco dedos para igualar la articulación básica.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2}] },
+            { id: 62, category: 'Hanon', difficulty: 'Principiante', title: 'Hanon Preparatorio: Terceras en Posición Cerrada', formula: '1-3-2-4-3-5-4-2', goal: 'Introduce saltos de tercera dentro de cinco teclas contiguas manteniendo la mano relajada.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:2,rh:2,lh:4}] },
+            { id: 63, category: 'Hanon', difficulty: 'Principiante', title: 'Hanon Preparatorio: Caída de Peso 5–3–4–2', formula: '5-3-4-2-3-1-2-4', goal: 'Enseña a transferir el peso natural del brazo comenzando desde el meñique hacia el pulgar.', steps: [{offset:7,rh:5,lh:1},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:5,rh:4,lh:2}] },
+            { id: 64, category: 'Hanon', difficulty: 'Principiante', title: 'Hanon N.º 11: Extensión Suave 1–3–5', formula: '1-3-5-4-3-5-4-3', goal: 'Apertura cómoda entre dedos 1-3 y 3-5 preparando la mano para extensiones de sexta.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:3,lh:3},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3}] },
+            { id: 65, category: 'Hanon', difficulty: 'Intermedio', title: 'Hanon N.º 12: Extensión 1–5 y Descenso Articulado', formula: '1-5-3-4-5-4-3-2', goal: 'Combina un alcance limpio de sexta con articulación definida en la parte superior de la mano.', steps: [{offset:0,rh:1,lh:5},{offset:9,rh:5,lh:1},{offset:5,rh:3,lh:3},{offset:7,rh:4,lh:2},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:4,rh:2,lh:4}] },
+            { id: 66, category: 'Hanon', difficulty: 'Intermedio', title: 'Hanon N.º 13: Cuartas Quebradas 3–1–4–2', formula: '3-1-4-2-5-3-4-2', goal: 'Mejora la coordinación alternando dedos interiores y exteriores en intervalos quebrados.', steps: [{offset:4,rh:3,lh:3},{offset:0,rh:1,lh:5},{offset:5,rh:4,lh:2},{offset:2,rh:2,lh:4},{offset:7,rh:5,lh:1},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:2,rh:2,lh:4}] },
+            { id: 67, category: 'Hanon', difficulty: 'Avanzado', title: 'Hanon N.º 14: Independencia 3–4 en Semicorcheas', formula: '1-2-4-3-4-5-4-3', goal: 'Ataca directamente la debilidad del cuarto dedo con repeticiones rápidas junto al 3 y el 5.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3}] },
+            { id: 68, category: 'Hanon', difficulty: 'Avanzado', title: 'Hanon N.º 15: Doble Salto con Remate 4–5', formula: '1-3-2-4-3-5-4-5', goal: 'Desarrolla velocidad y puntería en terceras ascendentes culminando con apertura hacia el dedo 5.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:9,rh:5,lh:1}] },
+            { id: 69, category: 'Hanon', difficulty: 'Avanzado', title: 'Hanon N.º 16: Estiramiento 3–5 con Retorno', formula: '1-3-2-3-5-4-3-2', goal: 'Amplía la flexibilidad entre el dedo medio y el meñique sin tensar el puente de la mano.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:4,rh:2,lh:4}] },
+            { id: 70, category: 'Hanon', difficulty: 'Avanzado', title: 'Hanon N.º 20: Gran Extensión de Octava (1–2–4–5)', formula: '1-2-4-5-4-2-3-2', goal: 'El célebre estudio final de la primera parte de Hanon: abre la mano hasta la octava con elasticidad.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:9,rh:4,lh:2},{offset:12,rh:5,lh:1},{offset:9,rh:4,lh:2},{offset:4,rh:2,lh:4},{offset:7,rh:3,lh:3},{offset:4,rh:2,lh:4}] },
+
+            // 2B. INDEPENDENCIA & FUERZA — EXPANSIÓN (+8 -> 18 TOTAL)
+            { id: 71, category: 'Independencia', difficulty: 'Principiante', title: 'Beyer Op. 101: Alternancia Pulgar–Índice (1–2)', formula: '1-2-1-2-1-3-2-1', goal: 'Control fundamental del pulgar relajado y ataque uniforme del dedo índice en pulso estable.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 72, category: 'Independencia', difficulty: 'Principiante', title: 'Beyer Op. 101: Arcos de Cinco Notas y Salto', formula: '1-2-3-4-5-5-3-1', goal: 'Combina el movimiento ligado paso a paso con un regreso limpio por intervalos de tríada.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1},{offset:7,rh:5,lh:1},{offset:4,rh:3,lh:3},{offset:0,rh:1,lh:5}] },
+            { id: 73, category: 'Independencia', difficulty: 'Principiante', title: 'Movimiento Contrario Básico (3 Dedos en Espejo)', formula: '1-2-3-2-1 (Espejo)', goal: 'Iniciación al movimiento contrario: pulgar, índice y medio de ambas manos trabajan en espejo real.', steps: [{offset:0,lhOffset:4,rh:1,lh:1},{offset:2,lhOffset:2,rh:2,lh:2},{offset:4,lhOffset:0,rh:3,lh:3},{offset:2,lhOffset:2,rh:2,lh:2},{offset:0,lhOffset:4,rh:1,lh:1}] },
+            { id: 74, category: 'Independencia', difficulty: 'Principiante', title: 'Cuartas y Quintas Alternas sobre Pulgar', formula: '1-4-1-5-1-4-1-3', goal: 'Estabiliza el eje del pulgar (MD) y meñique (MI) mientras los dedos externos miden intervalos.', steps: [{offset:0,rh:1,lh:5},{offset:5,rh:4,lh:2},{offset:0,rh:1,lh:5},{offset:7,rh:5,lh:1},{offset:0,rh:1,lh:5},{offset:5,rh:4,lh:2},{offset:0,rh:1,lh:5},{offset:4,rh:3,lh:3}] },
+            { id: 75, category: 'Independencia', difficulty: 'Intermedio', title: 'Czerny Op. 299: Velocidad en Arcos Ligados', formula: '1-2-3-4-3-2-3-5', goal: 'Estudio de escuela de la velocidad enfocado en la limpieza de articulación y acento en el dedo 5.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:7,rh:5,lh:1}] },
+            { id: 76, category: 'Independencia', difficulty: 'Intermedio', title: 'Notas Repetidas a Cuatro Dedos (4–3–2–1)', formula: '4-3-2-1 · 4-3-2-1', goal: 'Rotación rápida de cuatro dedos consecutivos sobre la misma tecla para pasajes virtuosísticos.', steps: [{offset:0,rh:4,lh:4},{offset:0,rh:3,lh:3},{offset:0,rh:2,lh:2},{offset:0,rh:1,lh:1},{offset:4,rh:4,lh:4},{offset:4,rh:3,lh:3},{offset:4,rh:2,lh:2},{offset:4,rh:1,lh:1}] },
+            { id: 77, category: 'Independencia', difficulty: 'Avanzado', title: 'Pischna: Extensión Cromática 2–3–4–5', formula: '1-2-3-4-5-4-3-2 (Crom.)', goal: 'Adapta la posición de cinco dedos a una combinación exigente de teclas blancas y negras sin pulgar en negras.', steps: [{offset:0,rh:1,lh:5},{offset:3,rh:2,lh:4},{offset:5,rh:3,lh:3},{offset:6,rh:4,lh:2},{offset:9,rh:5,lh:1},{offset:6,rh:4,lh:2},{offset:5,rh:3,lh:3},{offset:3,rh:2,lh:4}] },
+            { id: 78, category: 'Independencia', difficulty: 'Avanzado', title: 'Brahms (51 Ejercicios): Terceras en Espejo', formula: '1-3-2-4-3-5-4-2 (Espejo)', goal: 'Movimiento contrario simétrico en terceras quebradas: máxima independencia bilateral de dedos.', steps: [{offset:0,lhOffset:7,rh:1,lh:1},{offset:4,lhOffset:4,rh:3,lh:3},{offset:2,lhOffset:5,rh:2,lh:2},{offset:5,lhOffset:2,rh:4,lh:4},{offset:4,lhOffset:4,rh:3,lh:3},{offset:7,lhOffset:0,rh:5,lh:5},{offset:5,lhOffset:2,rh:4,lh:4},{offset:2,lhOffset:5,rh:2,lh:2}] },
+
+            // 3B. PASO DE PULGAR & ESCALAS — EXPANSIÓN (+10 -> 20 TOTAL)
+            { id: 79, category: 'Escalas', difficulty: 'Principiante', title: 'Tetracordio Mayor (4 Notas Sin Cruce)', formula: '1-2-3-4-3-2-1', goal: 'Construye la base de la escala mayor dominando tono-tono-semitono antes de introducir el paso de pulgar.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 80, category: 'Escalas', difficulty: 'Principiante', title: 'Tetracordio Menor (Tercera Menor b3)', formula: '1-2-3-4-3-2-1', goal: 'Familiariza los dedos 2, 3 y 4 con el semitono interior característico de todas las escalas menores.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:3,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:3,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 81, category: 'Escalas', difficulty: 'Principiante', title: 'Cruce Descendente del Dedo 3 (3–2–1–3–2–1)', formula: '3-2-1-3-2-1-2-3-1-2', goal: 'Aísla el movimiento de pasar el dedo medio por encima del pulgar al descender sin golpear la tecla.', steps: [{offset:9,rh:3,lh:3},{offset:7,rh:2,lh:1},{offset:5,rh:1,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:1,lh:2},{offset:7,rh:2,lh:1}] },
+            { id: 82, category: 'Escalas', difficulty: 'Principiante', title: 'Escala Pentatónica Menor (1 Octava)', formula: '1-2-3-1-2-3', goal: 'Escala esencial de improvisación moderna con digitación ergonómica libre de pulgares en teclas negras.', steps: [{offset:0,rh:1,lh:5},{offset:3,rh:2,lh:4},{offset:5,rh:3,lh:3},{offset:7,rh:1,lh:1},{offset:10,rh:2,lh:2},{offset:12,rh:3,lh:1},{offset:10,rh:2,lh:2},{offset:7,rh:1,lh:1},{offset:5,rh:3,lh:3},{offset:3,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 83, category: 'Escalas', difficulty: 'Principiante', title: 'Escala Mayor en Movimiento Contrario (1 Octava)', formula: '1-2-3-1-2-3-4-5 (Espejo)', goal: 'La forma más natural de aprender la escala mayor: ambas manos cruzan el pulgar al mismo tiempo.', steps: [{offset:0,lhOffset:0,rh:1,lh:1},{offset:2,lhOffset:-1,rh:2,lh:2},{offset:4,lhOffset:-3,rh:3,lh:3},{offset:5,lhOffset:-5,rh:1,lh:1},{offset:7,lhOffset:-7,rh:2,lh:2},{offset:9,lhOffset:-8,rh:3,lh:3},{offset:11,lhOffset:-10,rh:4,lh:4},{offset:12,lhOffset:-12,rh:5,lh:5},{offset:11,lhOffset:-10,rh:4,lh:4},{offset:9,lhOffset:-8,rh:3,lh:3},{offset:7,lhOffset:-7,rh:2,lh:2},{offset:5,lhOffset:-5,rh:1,lh:1},{offset:4,lhOffset:-3,rh:3,lh:3},{offset:2,lhOffset:-1,rh:2,lh:2},{offset:0,lhOffset:0,rh:1,lh:1}] },
+            { id: 84, category: 'Escalas', difficulty: 'Intermedio', title: 'Escala Menor Melódica (Asc. #6/#7 · Desc. Nat.)', formula: '1-2-3-1-2-3-4-5', goal: 'Domina el cambio de alteraciones: asciende con 6.º y 7.º grados mayores y desciende como menor natural.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:3,rh:3,lh:3},{offset:5,rh:1,lh:2},{offset:7,rh:2,lh:1},{offset:9,rh:3,lh:3},{offset:11,rh:4,lh:2},{offset:12,rh:5,lh:1},{offset:10,rh:4,lh:2},{offset:8,rh:3,lh:3},{offset:7,rh:2,lh:1},{offset:5,rh:1,lh:2},{offset:3,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 85, category: 'Escalas', difficulty: 'Intermedio', title: 'Modo Dórico (Menor con Sexta Mayor)', formula: '1-2-3-1-2-3-4-5', goal: 'Modo clave del jazz modal y música latina; entrena el brillo de la sexta mayor sobre tríada menor.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:3,rh:3,lh:3},{offset:5,rh:1,lh:2},{offset:7,rh:2,lh:1},{offset:9,rh:3,lh:3},{offset:10,rh:4,lh:2},{offset:12,rh:5,lh:1},{offset:10,rh:4,lh:2},{offset:9,rh:3,lh:3},{offset:7,rh:2,lh:1},{offset:5,rh:1,lh:2},{offset:3,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 86, category: 'Escalas', difficulty: 'Avanzado', title: 'Modo Lidio (Cuarta Aumentada #4)', formula: '1-2-3-4-1-2-3-4', goal: 'Desplaza el paso de pulgar al quinto grado para evitar colocar el pulgar sobre la cuarta aumentada.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:6,rh:4,lh:2},{offset:7,rh:1,lh:1},{offset:9,rh:2,lh:3},{offset:11,rh:3,lh:2},{offset:12,rh:4,lh:1},{offset:11,rh:3,lh:2},{offset:9,rh:2,lh:3},{offset:7,rh:1,lh:1},{offset:6,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 87, category: 'Escalas', difficulty: 'Avanzado', title: 'Escala Octatónica Disminuida (ST–T)', formula: '1-2-3-1-2-1-2-3-4', goal: 'Escala simétrica de 8 notas muy usada por Ravel, Scriabin y el jazz moderno, sin pulgar en teclas negras.', steps: [{offset:0,rh:1,lh:4},{offset:1,rh:2,lh:3},{offset:3,rh:3,lh:2},{offset:4,rh:1,lh:1},{offset:6,rh:2,lh:2},{offset:7,rh:1,lh:1},{offset:9,rh:2,lh:3},{offset:10,rh:3,lh:2},{offset:12,rh:4,lh:1},{offset:10,rh:3,lh:2},{offset:9,rh:2,lh:3},{offset:7,rh:1,lh:1},{offset:6,rh:2,lh:2},{offset:4,rh:1,lh:1},{offset:3,rh:3,lh:2},{offset:1,rh:2,lh:3},{offset:0,rh:1,lh:4}] },
+            { id: 88, category: 'Escalas', difficulty: 'Avanzado', title: 'Escala Mayor a Dos Octavas (Ascenso Continuo)', formula: '1-2-3-1-2-3-4-1-2-3-1-2-3-4-5', goal: 'Enlaza el cruce largo 4→1 sobre la tónica central para dominar recorridos extensos de dos octavas.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:1,lh:2},{offset:7,rh:2,lh:1},{offset:9,rh:3,lh:3},{offset:11,rh:4,lh:2},{offset:12,rh:1,lh:1},{offset:14,rh:2,lh:4},{offset:16,rh:3,lh:3},{offset:17,rh:1,lh:2},{offset:19,rh:2,lh:1},{offset:21,rh:3,lh:3},{offset:23,rh:4,lh:2},{offset:24,rh:5,lh:1}] },
+
+            // 4B. ARPEGIOS & SALTOS — EXPANSIÓN (+8 -> 16 TOTAL)
+            { id: 89, category: 'Arpegios', difficulty: 'Principiante', title: 'Tríada Mayor Quebrada (1 Octava)', formula: '1-2-3-5-3-2-1', goal: 'Primer arpegio de octava completa sin paso de pulgar: prepara el arco natural de la mano.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:7,rh:3,lh:2},{offset:12,rh:5,lh:1},{offset:7,rh:3,lh:2},{offset:4,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 90, category: 'Arpegios', difficulty: 'Principiante', title: 'Tríada Menor Quebrada (1 Octava)', formula: '1-2-3-5-3-2-1', goal: 'Consolida la distancia de tercera menor y quinta justa hasta la octava con muñeca flexible.', steps: [{offset:0,rh:1,lh:5},{offset:3,rh:2,lh:4},{offset:7,rh:3,lh:2},{offset:12,rh:5,lh:1},{offset:7,rh:3,lh:2},{offset:3,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 91, category: 'Arpegios', difficulty: 'Principiante', title: 'Acorde Mayor Arpegiado y en Bloque', formula: '1-3-5 · [1-3-5] · 5-3-1', goal: 'Conecta la sensación del arpegio nota por nota con el ataque simultáneo equilibrado de la tríada.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:3,lh:3},{offset:7,rh:5,lh:1},{offset:0,extraOffsets:[4,7],rh:1,rhFingers:[1,3,5],lh:5,lhFingers:[5,3,1]},{offset:7,rh:5,lh:1},{offset:4,rh:3,lh:3},{offset:0,rh:1,lh:5}] },
+            { id: 92, category: 'Arpegios', difficulty: 'Principiante', title: 'Arpegio Suspendido (sus4 → Mayor)', formula: '1-3-4-5 · 1-2-3-5', goal: 'Entrena la resolución clásica de cuarta suspendida hacia la tercera mayor manteniendo el pulso.', steps: [{offset:0,rh:1,lh:5},{offset:5,rh:3,lh:3},{offset:7,rh:4,lh:2},{offset:12,rh:5,lh:1},{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:7,rh:3,lh:2},{offset:12,rh:5,lh:1}] },
+            { id: 93, category: 'Arpegios', difficulty: 'Principiante', title: 'Cadencia I–IV–V–I en Tríadas Quebradas', formula: '1-3-5 · 1-3-5', goal: 'Desplazamiento fluido de la posición de tríada a través de los tres acordes principales de la tonalidad.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:3,lh:3},{offset:7,rh:5,lh:1},{offset:5,rh:1,lh:5},{offset:9,rh:3,lh:3},{offset:12,rh:5,lh:1},{offset:7,rh:1,lh:5},{offset:11,rh:3,lh:3},{offset:14,rh:5,lh:1},{offset:0,rh:1,lh:5},{offset:4,rh:3,lh:3},{offset:7,rh:5,lh:1}] },
+            { id: 94, category: 'Arpegios', difficulty: 'Intermedio', title: 'Arpegio Mayor Séptima (maj7 · 2 Octavas)', formula: '1-2-3-4-1-2-3-4-5', goal: 'Despliegue luminoso de cuatro notas por octava con paso silencioso del pulgar tras el cuarto dedo.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:4},{offset:7,rh:3,lh:3},{offset:11,rh:4,lh:2},{offset:12,rh:1,lh:1},{offset:16,rh:2,lh:4},{offset:19,rh:3,lh:3},{offset:23,rh:4,lh:2},{offset:24,rh:5,lh:1},{offset:23,rh:4,lh:2},{offset:19,rh:3,lh:3},{offset:16,rh:2,lh:4},{offset:12,rh:1,lh:1},{offset:11,rh:4,lh:2},{offset:7,rh:3,lh:3},{offset:4,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 95, category: 'Arpegios', difficulty: 'Intermedio', title: 'Arpegio Menor Séptima (m7 · 2 Octavas)', formula: '1-2-3-4-1-2-3-4-5', goal: 'Agilidad y uniformidad en arpegios menores con séptima menor a lo largo de dos octavas completas.', steps: [{offset:0,rh:1,lh:5},{offset:3,rh:2,lh:4},{offset:7,rh:3,lh:3},{offset:10,rh:4,lh:2},{offset:12,rh:1,lh:1},{offset:15,rh:2,lh:4},{offset:19,rh:3,lh:3},{offset:22,rh:4,lh:2},{offset:24,rh:5,lh:1},{offset:22,rh:4,lh:2},{offset:19,rh:3,lh:3},{offset:15,rh:2,lh:4},{offset:12,rh:1,lh:1},{offset:10,rh:4,lh:2},{offset:7,rh:3,lh:3},{offset:3,rh:2,lh:4},{offset:0,rh:1,lh:5}] },
+            { id: 96, category: 'Arpegios', difficulty: 'Avanzado', title: 'Arpegio Aumentado (aug Simétrico · 2 Octavas)', formula: '1-2-3-1-2-3-5', goal: 'Terceras mayores equidistantes de gran apertura: exige rotación elástica de muñeca en el cruce.', steps: [{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:3},{offset:8,rh:3,lh:2},{offset:12,rh:1,lh:1},{offset:16,rh:2,lh:3},{offset:20,rh:3,lh:2},{offset:24,rh:5,lh:1},{offset:20,rh:3,lh:2},{offset:16,rh:2,lh:3},{offset:12,rh:1,lh:1},{offset:8,rh:3,lh:2},{offset:4,rh:2,lh:3},{offset:0,rh:1,lh:5}] },
+
+            // 5B. TRINOS & DOBLES NOTAS — EXPANSIÓN (+8 -> 14 TOTAL)
+            { id: 97, category: 'Ornamentos', difficulty: 'Principiante', title: 'Intervalos Armónicos en Abanico (2.ª a 5.ª)', formula: '[1-2]→[1-3]→[1-4]→[1-5]', goal: 'Aprende a atacar dos notas simultáneamente manteniendo fija la base mientras se abre el intervalo.', steps: [{offset:0,extraOffsets:[2],rh:1,rhFingers:[1,2],lh:5,lhFingers:[5,4]},{offset:0,extraOffsets:[4],rh:1,rhFingers:[1,3],lh:5,lhFingers:[5,3]},{offset:0,extraOffsets:[5],rh:1,rhFingers:[1,4],lh:5,lhFingers:[5,2]},{offset:0,extraOffsets:[7],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1]},{offset:0,extraOffsets:[5],rh:1,rhFingers:[1,4],lh:5,lhFingers:[5,2]},{offset:0,extraOffsets:[4],rh:1,rhFingers:[1,3],lh:5,lhFingers:[5,3]},{offset:0,extraOffsets:[2],rh:1,rhFingers:[1,2],lh:5,lhFingers:[5,4]}] },
+            { id: 98, category: 'Ornamentos', difficulty: 'Principiante', title: 'Quintas Paralelas de Muñeca Libre', formula: '[1-5] → [1-5] → [1-5]', goal: 'Desarrolla el rebote suave de muñeca en dobles notas de quinta justa sin rigidez en el antebrazo.', steps: [{offset:0,extraOffsets:[7],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1]},{offset:2,extraOffsets:[9],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1]},{offset:4,extraOffsets:[11],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1]},{offset:5,extraOffsets:[12],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1]},{offset:4,extraOffsets:[11],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1]},{offset:2,extraOffsets:[9],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1]},{offset:0,extraOffsets:[7],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1]}] },
+            { id: 99, category: 'Ornamentos', difficulty: 'Principiante', title: 'Trino Medido de Iniciación (1–2–3)', formula: '1-2-1-2-3-2-1-2', goal: 'Introduce la alternancia rítmica de trino con dedos fuertes rematando con una bordadura superior.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4}] },
+            { id: 100, category: 'Ornamentos', difficulty: 'Principiante', title: 'Apoyaturas Clásicas (Resolución 4–3 / 2–1)', formula: '4-3 · 3-2 · 2-1 · 3-2', goal: 'Practica el gesto de apoyo y liberación de muñeca (caer-levantar) típico del fraseo clásico.', steps: [{offset:5,rh:4,lh:2,accent:true},{offset:4,rh:3,lh:3},{offset:4,rh:3,lh:3,accent:true},{offset:2,rh:2,lh:4},{offset:2,rh:2,lh:4,accent:true},{offset:0,rh:1,lh:5},{offset:4,rh:3,lh:3,accent:true},{offset:2,rh:2,lh:4}] },
+            { id: 101, category: 'Ornamentos', difficulty: 'Intermedio', title: 'Cuartas Paralelas Articuladas', formula: '[1-4] → [2-5] → [1-4]', goal: 'Alternancia limpia de pares de dedos 1-4 y 2-5 en cuartas armónicas ascendentes y descendentes.', steps: [{offset:0,extraOffsets:[5],rh:1,rhFingers:[1,4],lh:5,lhFingers:[5,2]},{offset:2,extraOffsets:[7],rh:2,rhFingers:[2,5],lh:4,lhFingers:[4,1]},{offset:4,extraOffsets:[9],rh:1,rhFingers:[1,4],lh:5,lhFingers:[5,2]},{offset:5,extraOffsets:[11],rh:2,rhFingers:[2,5],lh:4,lhFingers:[4,1]},{offset:4,extraOffsets:[9],rh:1,rhFingers:[1,4],lh:5,lhFingers:[5,2]},{offset:2,extraOffsets:[7],rh:2,rhFingers:[2,5],lh:4,lhFingers:[4,1]},{offset:0,extraOffsets:[5],rh:1,rhFingers:[1,4],lh:5,lhFingers:[5,2]}] },
+            { id: 102, category: 'Ornamentos', difficulty: 'Intermedio', title: 'Trino Barroco con Terminación Clásica', formula: '2-3-2-3-2-3-1-2', goal: 'Ejecuta un trino uniforme y cierra con la resolución tradicional de nota inferior hacia la principal.', steps: [{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4}] },
+            { id: 103, category: 'Ornamentos', difficulty: 'Avanzado', title: 'Chopin Op. 25 N.º 6: Terceras Cromáticas', formula: '[1-3]→[2-4]→[1-5] (Crom.)', goal: 'Inspirado en el célebre estudio de terceras: precisión absoluta en semitonos dobles con ligadura.', steps: [{offset:0,extraOffsets:[4],rh:1,rhFingers:[1,3],lh:5,lhFingers:[5,3]},{offset:1,extraOffsets:[5],rh:2,rhFingers:[2,4],lh:4,lhFingers:[4,2]},{offset:2,extraOffsets:[6],rh:1,rhFingers:[1,3],lh:5,lhFingers:[5,3]},{offset:3,extraOffsets:[7],rh:2,rhFingers:[2,4],lh:4,lhFingers:[4,2]},{offset:4,extraOffsets:[8],rh:1,rhFingers:[1,5],lh:4,lhFingers:[4,2]},{offset:3,extraOffsets:[7],rh:2,rhFingers:[2,4],lh:4,lhFingers:[4,2]},{offset:2,extraOffsets:[6],rh:1,rhFingers:[1,3],lh:5,lhFingers:[5,3]},{offset:1,extraOffsets:[5],rh:2,rhFingers:[2,4],lh:4,lhFingers:[4,2]},{offset:0,extraOffsets:[4],rh:1,rhFingers:[1,3],lh:5,lhFingers:[5,3]}] },
+            { id: 104, category: 'Ornamentos', difficulty: 'Avanzado', title: 'Doble Trino de Terceras ([1-3] ↔ [2-4])', formula: '[1-3]-[2-4] · [1-3]-[2-4]', goal: 'Alternancia rápida de terceras adyacentes exigiendo total equilibrio entre los dedos interiores y exteriores.', steps: [{offset:0,extraOffsets:[4],rh:1,rhFingers:[1,3],lh:5,lhFingers:[5,3]},{offset:2,extraOffsets:[5],rh:2,rhFingers:[2,4],lh:4,lhFingers:[4,2]},{offset:0,extraOffsets:[4],rh:1,rhFingers:[1,3],lh:5,lhFingers:[5,3]},{offset:2,extraOffsets:[5],rh:2,rhFingers:[2,4],lh:4,lhFingers:[4,2]},{offset:4,extraOffsets:[7],rh:1,rhFingers:[1,3],lh:5,lhFingers:[5,3]},{offset:5,extraOffsets:[9],rh:2,rhFingers:[2,4],lh:4,lhFingers:[4,2]},{offset:4,extraOffsets:[7],rh:1,rhFingers:[1,3],lh:5,lhFingers:[5,3]},{offset:5,extraOffsets:[9],rh:2,rhFingers:[2,4],lh:4,lhFingers:[4,2]}] },
+
+            // 6B. JAZZ, POLIRRITMIA & ESTILOS — EXPANSIÓN (+8 -> 14 TOTAL)
+            { id: 105, category: 'Ritmo', difficulty: 'Principiante', title: 'Acompañamiento de Vals (Compás 3/4)', formula: '5 → [3-1] → [3-1] (3/4)', goal: 'Domina el balance ternario típico del vals alternando bajo acentuado y acordes ligeros en tiempos 2 y 3.', steps: [{offset:0,rh:1,lh:5,accent:true},{offset:4,extraOffsets:[7],rh:2,rhFingers:[2,4],lh:3,lhFingers:[3,1]},{offset:4,extraOffsets:[7],rh:2,rhFingers:[2,4],lh:3,lhFingers:[3,1]},{offset:7,rh:5,lh:1,accent:true},{offset:4,extraOffsets:[7],rh:2,rhFingers:[2,4],lh:3,lhFingers:[3,1]},{offset:4,extraOffsets:[7],rh:2,rhFingers:[2,4],lh:3,lhFingers:[3,1]}] },
+            { id: 106, category: 'Ritmo', difficulty: 'Principiante', title: 'Boogie-Woogie Clásico (Bajo 1–3–5–6)', formula: '5-3-2-1-2-3 (MI)', goal: 'Patrón clásico de blues y rock & roll que desarrolla resistencia y estabilidad rítmica en el bajo.', steps: [{offset:0,rh:1,lh:5,accent:true},{offset:4,rh:2,lh:3},{offset:7,rh:3,lh:2},{offset:9,rh:5,lh:1},{offset:7,rh:3,lh:2},{offset:4,rh:2,lh:3},{offset:0,rh:1,lh:5},{offset:4,rh:2,lh:3}] },
+            { id: 107, category: 'Ritmo', difficulty: 'Principiante', title: 'Pop Moderno: Progresión I–V–vi–IV', formula: 'C → G → Am → F (Arpegio)', goal: 'La progresión más famosa del pop contemporáneo en arpegios fluidos para entrenar cambios de posición.', steps: [{offset:0,rh:1,lh:5,accent:true},{offset:4,rh:3,lh:3},{offset:7,rh:5,lh:1},{offset:7,rh:1,lh:5,accent:true},{offset:11,rh:3,lh:3},{offset:14,rh:5,lh:1},{offset:9,rh:1,lh:5,accent:true},{offset:12,rh:3,lh:3},{offset:16,rh:5,lh:1},{offset:5,rh:1,lh:5,accent:true},{offset:9,rh:3,lh:3},{offset:12,rh:5,lh:1}] },
+            { id: 108, category: 'Ritmo', difficulty: 'Principiante', title: 'Balada Moderna en Octavas y Quintas (1–5–8)', formula: '1-3-5-3 · 1-3-5-3', goal: 'Acompañamiento abierto de balada pop/cinematográfica con sonoridad amplia y pulso constante.', steps: [{offset:0,rh:1,lh:5,accent:true},{offset:7,rh:3,lh:2},{offset:12,rh:5,lh:1},{offset:7,rh:3,lh:2},{offset:0,rh:1,lh:5,accent:true},{offset:7,rh:3,lh:2},{offset:12,rh:5,lh:1},{offset:7,rh:3,lh:2}] },
+            { id: 109, category: 'Ritmo', difficulty: 'Principiante', title: 'Groove Pentatónico Soul (Acentos Sincopados)', formula: '[1]-2-3-[4]-5-4-[3]-2', goal: 'Introduce acentos desplazados sobre la escala pentatónica mayor para dar sensación de groove.', steps: [{offset:0,rh:1,lh:5,accent:true},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:7,rh:4,lh:2,accent:true},{offset:9,rh:5,lh:1},{offset:7,rh:4,lh:2},{offset:4,rh:3,lh:3,accent:true},{offset:2,rh:2,lh:4}] },
+            { id: 110, category: 'Ritmo', difficulty: 'Intermedio', title: 'Bossa Nova: Clave Brasileña (Cmaj7 / C6)', formula: '5 → [2-3-5] (Síncopa)', goal: 'Articulación cálida y sincopada alternando el bajo en negras con voicings de Bossa Nova.', steps: [{offset:0,rh:1,lh:5,accent:true},{offset:4,extraOffsets:[7,11],rh:2,rhFingers:[2,3,5],lh:3,lhFingers:[3,2,1],accent:true},{offset:7,rh:1,lh:3},{offset:4,extraOffsets:[7,11],rh:2,rhFingers:[2,3,5],lh:3,lhFingers:[3,2,1],accent:true},{offset:0,rh:1,lh:5},{offset:4,extraOffsets:[7,9],rh:2,rhFingers:[2,3,4],lh:3,lhFingers:[3,2,1],accent:true},{offset:7,rh:1,lh:3},{offset:4,extraOffsets:[7,11],rh:2,rhFingers:[2,3,5],lh:3,lhFingers:[3,2,1]}] },
+            { id: 111, category: 'Ritmo', difficulty: 'Intermedio', title: 'Gospel & Neo-Soul: Acordes Diatónicos en Cadena', formula: 'Cmaj7 → Dm7 → Em7 → Fmaj7', goal: 'Desplazamiento paralelo de cuatríadas diatónicas con control dinámico uniforme en todos los dedos.', steps: [{offset:0,extraOffsets:[4,7,11],rh:1,rhFingers:[1,2,3,5],lh:5,lhFingers:[5,3,2,1],accent:true},{offset:2,extraOffsets:[5,9,12],rh:1,rhFingers:[1,2,3,5],lh:5,lhFingers:[5,3,2,1]},{offset:4,extraOffsets:[7,11,14],rh:1,rhFingers:[1,2,3,5],lh:5,lhFingers:[5,3,2,1],accent:true},{offset:5,extraOffsets:[9,12,16],rh:1,rhFingers:[1,2,3,5],lh:5,lhFingers:[5,3,2,1]}] },
+            { id: 112, category: 'Ritmo', difficulty: 'Avanzado', title: 'Stride Ragtime (Scott Joplin · Saltos I–IV–V)', formula: '5→[5-3-1] · 4→[5-3-1]', goal: 'Cambios armónicos completos en estilo Ragtime exigiendo puntería espacial entre bajo y acorde central.', steps: [{offset:0,rh:1,lh:5,accent:true},{offset:12,extraOffsets:[16,19],rh:1,rhFingers:[1,3,5],lh:5,lhFingers:[5,3,1]},{offset:7,rh:1,lh:3,accent:true},{offset:12,extraOffsets:[16,19],rh:1,rhFingers:[1,3,5],lh:5,lhFingers:[5,3,1]},{offset:5,rh:1,lh:4,accent:true},{offset:12,extraOffsets:[17,21],rh:1,rhFingers:[1,3,5],lh:5,lhFingers:[5,3,1]},{offset:7,rh:1,lh:3,accent:true},{offset:11,extraOffsets:[14,19],rh:1,rhFingers:[1,2,5],lh:5,lhFingers:[5,3,1]}] },
+
+            // 7B. REPERTORIO CLÁSICO & VIRTUOSISMO — EXPANSIÓN (+8 -> 18 TOTAL)
+            { id: 113, category: 'Repertorio', difficulty: 'Principiante', title: 'Beethoven: Himno a la Alegría (9.ª Sinfonía)', formula: '3-3-4-5-5-4-3-2-1-1-2-3', goal: 'Melodía inmortal en posición fija de cinco dedos: ideal para perfeccionar el fraseo legato inicial.', steps: [{offset:4,rh:3,lh:3},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1},{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:4,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5},{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3}] },
+            { id: 114, category: 'Repertorio', difficulty: 'Principiante', title: 'Bach: Minueto en Sol (Motivo BWV Anh. 114)', formula: '5-1-2-3-4-5-1-1', goal: 'Célebre motivo barroco del Cuaderno de Anna Magdalena: combina salto de quinta y escala ascendente.', steps: [{offset:7,rh:5,lh:1,accent:true},{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:4,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1,accent:true},{offset:0,rh:1,lh:5},{offset:0,rh:1,lh:5}] },
+            { id: 115, category: 'Repertorio', difficulty: 'Principiante', title: 'Burgmüller: Arabesque (Op. 100 N.º 2)', formula: '1-2-3-4-5-4-3-2-1-2-5-1', goal: 'Motivo ligero y enérgico del repertorio romántico inicial que alterna corrida menor y saltos claros.', steps: [{offset:0,rh:1,lh:5},{offset:2,rh:2,lh:4},{offset:3,rh:3,lh:3},{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1,accent:true},{offset:5,rh:4,lh:2},{offset:3,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5},{offset:3,rh:2,lh:4},{offset:7,rh:5,lh:1,accent:true},{offset:0,rh:1,lh:5}] },
+            { id: 116, category: 'Repertorio', difficulty: 'Principiante', title: 'Erik Satie: Gymnopédie N.º 1 (Péndulo)', formula: '5 → [5-3-1] · 5 → [5-3-1]', goal: 'Acompañamiento hipnótico de acordes con séptima mayor exigiendo máxima suavidad y control del peso.', steps: [{offset:0,rh:1,lh:5,accent:true},{offset:7,extraOffsets:[11,14],rh:1,rhFingers:[1,3,5],lh:5,lhFingers:[5,3,1]},{offset:5,rh:1,lh:5,accent:true},{offset:9,extraOffsets:[12,16],rh:1,rhFingers:[1,3,5],lh:5,lhFingers:[5,3,1]},{offset:0,rh:1,lh:5,accent:true},{offset:7,extraOffsets:[11,14],rh:1,rhFingers:[1,3,5],lh:5,lhFingers:[5,3,1]},{offset:5,rh:1,lh:5,accent:true},{offset:9,extraOffsets:[12,16],rh:1,rhFingers:[1,3,5],lh:5,lhFingers:[5,3,1]}] },
+            { id: 117, category: 'Repertorio', difficulty: 'Intermedio', title: 'Beethoven: Para Elisa (Motivo 5–4)', formula: '5-4-5-4-5-2-4-3-1', goal: 'Alternancia expresiva de semitono entre los dedos 5 y 4 seguida de un descenso arpegiado en modo menor.', steps: [{offset:7,rh:5,lh:1},{offset:6,rh:4,lh:2},{offset:7,rh:5,lh:1},{offset:6,rh:4,lh:2},{offset:7,rh:5,lh:1},{offset:2,rh:2,lh:4},{offset:5,rh:4,lh:2},{offset:3,rh:3,lh:3},{offset:0,rh:1,lh:5,accent:true}] },
+            { id: 118, category: 'Repertorio', difficulty: 'Avanzado', title: 'Bach: Toccata y Fuga (Motivo BWV 565)', formula: '5-4-5-4-3-2-1-2-1', goal: 'Icónico mordente barroco y descenso dramático hacia la sensible con ataque majestuoso y limpio.', steps: [{offset:7,rh:5,lh:1,accent:true},{offset:5,rh:4,lh:2},{offset:7,rh:5,lh:1},{offset:5,rh:4,lh:2},{offset:3,rh:3,lh:3},{offset:2,rh:2,lh:4},{offset:0,rh:1,lh:5},{offset:-1,rh:2,lh:4},{offset:0,rh:1,lh:5,accent:true}] },
+            { id: 119, category: 'Repertorio', difficulty: 'Avanzado', title: 'Chopin: Fantasía-Impromptu (Op. 66)', formula: '3-4-3-2-3-1-3-2-1-2-1-5', goal: 'Cascada romántica de semicorcheas con rodeos cromáticos y despliegue veloz hacia la quinta aguda.', steps: [{offset:7,rh:3,lh:3},{offset:8,rh:4,lh:2},{offset:7,rh:3,lh:3},{offset:6,rh:2,lh:4},{offset:7,rh:3,lh:3},{offset:12,rh:1,lh:2},{offset:15,rh:3,lh:3},{offset:14,rh:2,lh:4},{offset:12,rh:1,lh:2},{offset:11,rh:2,lh:3},{offset:12,rh:1,lh:2},{offset:19,rh:5,lh:1,accent:true}] },
+            { id: 120, category: 'Repertorio', difficulty: 'Avanzado', title: 'Liszt: Octavas Cromáticas (Estilo Mazeppa)', formula: '[1-5]→[1-4]→[1-5] (Crom.)', goal: 'Técnica de concierto de Kullak/Liszt: usa dedos 1-5 en octavas blancas y 1-4 en octavas negras.', steps: [{offset:0,extraOffsets:[12],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1],accent:true},{offset:1,extraOffsets:[13],rh:1,rhFingers:[1,4],lh:4,lhFingers:[4,1]},{offset:2,extraOffsets:[14],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1]},{offset:3,extraOffsets:[15],rh:1,rhFingers:[1,4],lh:4,lhFingers:[4,1]},{offset:4,extraOffsets:[16],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1],accent:true},{offset:5,extraOffsets:[17],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1]},{offset:6,extraOffsets:[18],rh:1,rhFingers:[1,4],lh:4,lhFingers:[4,1]},{offset:7,extraOffsets:[19],rh:1,rhFingers:[1,5],lh:5,lhFingers:[5,1],accent:true}] }
         ];
 
         // Desplazamientos base para el teclado físico PC (0 = C3..E5, -1 = C2..E4, +1 = C4..E6)
@@ -697,6 +791,7 @@
         const state = {
             exerciseId: 1,
             categoryFilter: 'all',
+            difficultyFilter: 'all',
             searchQuery: '',
             handMode: 'both',
             baseRootOffset: 0,
@@ -991,19 +1086,45 @@
             return EXERCISES_DB.find(e => e.id === state.exerciseId) || EXERCISES_DB[0];
         }
 
-        function getFilteredExercises() {
-            const q = state.searchQuery.trim().toLowerCase();
+        function getExercisesMatchingCatAndSearch() {
+            const q = state.searchQuery.trim().toLowerCase().replace(/^#/, '');
             return EXERCISES_DB.filter(ex => {
                 const matchCat = state.categoryFilter === 'all' || ex.category === state.categoryFilter;
                 if (!matchCat) return false;
                 if (!q) return true;
+                const paddedId = String(ex.id).padStart(2, '0');
                 return (
                     ex.title.toLowerCase().includes(q) ||
                     ex.category.toLowerCase().includes(q) ||
+                    ex.difficulty.toLowerCase().includes(q) ||
                     ex.formula.toLowerCase().includes(q) ||
-                    String(ex.id).padStart(2, '0').includes(q)
+                    ex.goal.toLowerCase().includes(q) ||
+                    paddedId.includes(q) ||
+                    String(ex.id) === q
                 );
             });
+        }
+
+        function getFilteredExercises() {
+            const base = getExercisesMatchingCatAndSearch();
+            if (state.difficultyFilter === 'all') return base;
+            return base.filter(ex => ex.difficulty === state.difficultyFilter);
+        }
+
+        function updateDifficultyFilterCounts() {
+            const base = getExercisesMatchingCatAndSearch();
+            const counts = { all: base.length, Principiante: 0, Intermedio: 0, Avanzado: 0 };
+            base.forEach(ex => {
+                if (counts[ex.difficulty] !== undefined) counts[ex.difficulty]++;
+            });
+            const elAll = document.getElementById('count-diff-all');
+            const elP = document.getElementById('count-diff-principiante');
+            const elI = document.getElementById('count-diff-intermedio');
+            const elA = document.getElementById('count-diff-avanzado');
+            if (elAll) elAll.textContent = `(${counts.all})`;
+            if (elP) elP.textContent = `(${counts.Principiante})`;
+            if (elI) elI.textContent = `(${counts.Intermedio})`;
+            if (elA) elA.textContent = `(${counts.Avanzado})`;
         }
 
         function getStepRawOffsets(step) {
@@ -1129,6 +1250,7 @@
             const prevScrollTop = listEl.scrollTop;
             listEl.innerHTML = '';
 
+            updateDifficultyFilterCounts();
             const filtered = getFilteredExercises();
             document.getElementById('exercise-count-badge').textContent = filtered.length;
             document.getElementById('mastered-counter').textContent = `★ ${state.masteredIds.length}/${EXERCISES_DB.length}`;
@@ -1159,13 +1281,28 @@
                         ? 'bg-indigo-600/20 border-indigo-500/70 text-white shadow-sm'
                         : 'bg-studio-950/70 hover:bg-studio-800/80 border-zinc-800/80 text-zinc-300'
                 }`;
+                const diffDotClass = ex.difficulty === 'Principiante'
+                    ? 'bg-emerald-400'
+                    : ex.difficulty === 'Intermedio'
+                        ? 'bg-amber-400'
+                        : 'bg-rose-400';
+                const diffShort = ex.difficulty === 'Principiante' ? 'Princ.' : ex.difficulty === 'Intermedio' ? 'Inter.' : 'Avanz.';
+                const diffTextClass = ex.difficulty === 'Principiante'
+                    ? 'text-emerald-400/90'
+                    : ex.difficulty === 'Intermedio'
+                        ? 'text-amber-400/90'
+                        : 'text-rose-400/90';
+
                 btn.innerHTML = `
                     <div class="min-w-0">
                         <div class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full ${diffDotClass} shrink-0" title="Nivel ${ex.difficulty}"></span>
                             <span class="font-mono text-[11px] font-bold ${isSelected ? 'text-indigo-400' : 'text-zinc-500'}">#${String(ex.id).padStart(2, '0')}</span>
                             <span class="text-xs font-semibold truncate">${ex.title}</span>
                         </div>
-                        <div class="flex items-center gap-2 mt-0.5 text-[10px] text-zinc-500 font-mono">
+                        <div class="flex items-center gap-1.5 mt-0.5 text-[10px] text-zinc-500 font-mono">
+                            <span class="${diffTextClass}">${diffShort}</span>
+                            <span>•</span>
                             <span>${ex.category}</span>
                             <span>•</span>
                             <span class="truncate">${ex.formula}</span>
@@ -1205,7 +1342,7 @@
 
             const diffBadge = document.getElementById('ex-difficulty-badge');
             diffBadge.textContent = `Nivel ${ex.difficulty}`;
-            if (ex.difficulty === 'Básico') {
+            if (ex.difficulty === 'Principiante') {
                 diffBadge.className = 'text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30';
             } else if (ex.difficulty === 'Intermedio') {
                 diffBadge.className = 'text-[11px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30';
@@ -2228,6 +2365,14 @@
                 mobileNavClone.classList.add('hidden');
                 mobileNavClone.classList.remove('flex');
             }
+            const dAll = clone.querySelector('#btn-diff-all');
+            if (dAll) dAll.className = 'px-1.5 py-1 rounded-lg bg-indigo-600 text-white transition-all cursor-pointer truncate';
+            const dP = clone.querySelector('#btn-diff-principiante');
+            if (dP) dP.className = 'px-1.5 py-1 rounded-lg text-emerald-300/80 hover:bg-studio-800 transition-all cursor-pointer truncate';
+            const dI = clone.querySelector('#btn-diff-intermedio');
+            if (dI) dI.className = 'px-1.5 py-1 rounded-lg text-amber-300/80 hover:bg-studio-800 transition-all cursor-pointer truncate';
+            const dA = clone.querySelector('#btn-diff-avanzado');
+            if (dA) dA.className = 'px-1.5 py-1 rounded-lg text-rose-300/80 hover:bg-studio-800 transition-all cursor-pointer truncate';
 
             const htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
             const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
@@ -2384,6 +2529,26 @@
             document.getElementById('category-filter').addEventListener('change', (e) => {
                 state.categoryFilter = e.target.value;
                 renderExercisesList();
+            });
+
+            // Filtro de Dificultad (Todos / Principiante / Intermedio / Avanzado)
+            const diffButtons = [
+                { el: document.getElementById('btn-diff-all'), val: 'all', active: 'px-1.5 py-1 rounded-lg bg-indigo-600 text-white transition-all cursor-pointer truncate', idle: 'px-1.5 py-1 rounded-lg text-zinc-400 hover:bg-studio-800 hover:text-white transition-all cursor-pointer truncate' },
+                { el: document.getElementById('btn-diff-principiante'), val: 'Principiante', active: 'px-1.5 py-1 rounded-lg bg-emerald-600/30 border border-emerald-500/60 text-emerald-200 font-bold transition-all cursor-pointer truncate', idle: 'px-1.5 py-1 rounded-lg text-emerald-300/80 hover:bg-studio-800 transition-all cursor-pointer truncate' },
+                { el: document.getElementById('btn-diff-intermedio'), val: 'Intermedio', active: 'px-1.5 py-1 rounded-lg bg-amber-500/25 border border-amber-500/60 text-amber-200 font-bold transition-all cursor-pointer truncate', idle: 'px-1.5 py-1 rounded-lg text-amber-300/80 hover:bg-studio-800 transition-all cursor-pointer truncate' },
+                { el: document.getElementById('btn-diff-avanzado'), val: 'Avanzado', active: 'px-1.5 py-1 rounded-lg bg-rose-500/25 border border-rose-500/60 text-rose-200 font-bold transition-all cursor-pointer truncate', idle: 'px-1.5 py-1 rounded-lg text-rose-300/80 hover:bg-studio-800 transition-all cursor-pointer truncate' }
+            ];
+            const setDifficultyFilter = (diffVal) => {
+                state.difficultyFilter = diffVal;
+                diffButtons.forEach(item => {
+                    if (item.el) item.el.className = item.val === diffVal ? item.active : item.idle;
+                });
+                const listEl = document.getElementById('exercises-list');
+                if (listEl) listEl.scrollTop = 0;
+                renderExercisesList();
+            };
+            diffButtons.forEach(item => {
+                if (item.el) item.el.addEventListener('click', () => setDifficultyFilter(item.val));
             });
 
             // Navegación Anterior / Siguiente respetando filtros activos
